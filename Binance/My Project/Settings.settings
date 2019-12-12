@@ -1,0 +1,36 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="APIsecret" Type="System.String" Scope="User">
+      <Value Profile="(Default)">iYcFPU1HBwTKzsyW1YrRpd221zrRZwXEQ43Vb66IMFkFoDMR0E9m78iYQE5xDie9</Value>
+    </Setting>
+    <Setting Name="APIkey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">8H7MQuLfyG2iCChKz6B3Jfx35ewRiV0QQEccIMgFfJleA41fhnbLLXS6mmbKn4ET</Value>
+    </Setting>
+    <Setting Name="period" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1D</Value>
+    </Setting>
+    <Setting Name="UPtimer" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="Asset" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;BTC&lt;/string&gt;
+  &lt;string&gt;ETH&lt;/string&gt;
+  &lt;string&gt;EOS&lt;/string&gt;
+  &lt;string&gt;USDT&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="Split" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;15&lt;/string&gt;
+  &lt;string&gt;10&lt;/string&gt;
+  &lt;string&gt;10&lt;/string&gt;
+  &lt;string&gt;10&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
