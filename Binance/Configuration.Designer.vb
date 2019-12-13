@@ -22,10 +22,12 @@ Partial Class Configuration
     'Non modificarla mediante l'editor del codice.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
-        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
-        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
+        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
+        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Me.XThemeContainer1 = New Binance.XThemeContainer()
+        Me.XButton5 = New Binance.XButton()
+        Me.XButton4 = New Binance.XButton()
         Me.Chart1 = New System.Windows.Forms.DataVisualization.Charting.Chart()
         Me.XButton3 = New Binance.XButton()
         Me.XButton2 = New Binance.XButton()
@@ -45,8 +47,6 @@ Partial Class Configuration
         Me.XLabel3 = New Binance.XLabel()
         Me.TextBoxSecret = New Binance.XNormalTextBox()
         Me.TextBoxKey = New Binance.XNormalTextBox()
-        Me.XButton4 = New Binance.XButton()
-        Me.XButton5 = New Binance.XButton()
         Me.XThemeContainer1.SuspendLayout()
         CType(Me.Chart1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -90,28 +90,60 @@ Partial Class Configuration
         Me.XThemeContainer1.TabIndex = 0
         Me.XThemeContainer1.Text = "Configuration"
         '
+        'XButton5
+        '
+        Me.XButton5.BackColor = System.Drawing.Color.Transparent
+        Me.XButton5.BaseColour = System.Drawing.Color.FromArgb(CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer))
+        Me.XButton5.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
+        Me.XButton5.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.XButton5.HoverColour = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer))
+        Me.XButton5.Location = New System.Drawing.Point(700, 252)
+        Me.XButton5.Name = "XButton5"
+        Me.XButton5.PressedColour = System.Drawing.Color.FromArgb(CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer))
+        Me.XButton5.ProgressColour = System.Drawing.Color.FromArgb(CType(CType(184, Byte), Integer), CType(CType(134, Byte), Integer), CType(CType(11, Byte), Integer))
+        Me.XButton5.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.XButton5.Size = New System.Drawing.Size(112, 40)
+        Me.XButton5.TabIndex = 130
+        Me.XButton5.Text = "GitHub"
+        '
+        'XButton4
+        '
+        Me.XButton4.BackColor = System.Drawing.Color.Transparent
+        Me.XButton4.BaseColour = System.Drawing.Color.FromArgb(CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer))
+        Me.XButton4.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
+        Me.XButton4.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.XButton4.HoverColour = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer))
+        Me.XButton4.Location = New System.Drawing.Point(700, 205)
+        Me.XButton4.Name = "XButton4"
+        Me.XButton4.PressedColour = System.Drawing.Color.FromArgb(CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer))
+        Me.XButton4.ProgressColour = System.Drawing.Color.FromArgb(CType(CType(184, Byte), Integer), CType(CType(134, Byte), Integer), CType(CType(11, Byte), Integer))
+        Me.XButton4.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.XButton4.Size = New System.Drawing.Size(112, 40)
+        Me.XButton4.TabIndex = 129
+        Me.XButton4.Text = "New Account"
+        '
         'Chart1
         '
         Me.Chart1.BackColor = System.Drawing.Color.Transparent
         Me.Chart1.BorderlineColor = System.Drawing.Color.Transparent
-        ChartArea2.BackColor = System.Drawing.Color.Transparent
-        ChartArea2.BackImageTransparentColor = System.Drawing.Color.Transparent
-        ChartArea2.BackSecondaryColor = System.Drawing.Color.Transparent
-        ChartArea2.BorderColor = System.Drawing.Color.Transparent
-        ChartArea2.Name = "ChartArea1"
-        Me.Chart1.ChartAreas.Add(ChartArea2)
-        Legend2.BackColor = System.Drawing.Color.Transparent
-        Legend2.ForeColor = System.Drawing.Color.Gainsboro
-        Legend2.Name = "Legend1"
-        Me.Chart1.Legends.Add(Legend2)
+        ChartArea1.BackColor = System.Drawing.Color.Transparent
+        ChartArea1.BackImageTransparentColor = System.Drawing.Color.Transparent
+        ChartArea1.BackSecondaryColor = System.Drawing.Color.Transparent
+        ChartArea1.BorderColor = System.Drawing.Color.Transparent
+        ChartArea1.Name = "ChartArea1"
+        Me.Chart1.ChartAreas.Add(ChartArea1)
+        Legend1.BackColor = System.Drawing.Color.Transparent
+        Legend1.ForeColor = System.Drawing.Color.Gainsboro
+        Legend1.Name = "Legend1"
+        Me.Chart1.Legends.Add(Legend1)
         Me.Chart1.Location = New System.Drawing.Point(369, 235)
         Me.Chart1.Name = "Chart1"
         Me.Chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel
-        Series2.ChartArea = "ChartArea1"
-        Series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut
-        Series2.Legend = "Legend1"
-        Series2.Name = "Asset"
-        Me.Chart1.Series.Add(Series2)
+        Series1.ChartArea = "ChartArea1"
+        Series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut
+        Series1.Legend = "Legend1"
+        Series1.Name = "Asset"
+        Me.Chart1.Series.Add(Series1)
         Me.Chart1.Size = New System.Drawing.Size(285, 218)
         Me.Chart1.TabIndex = 128
         Me.Chart1.Text = "Chart1"
@@ -260,7 +292,7 @@ Partial Class Configuration
         Me.XComboBox1.FormattingEnabled = True
         Me.XComboBox1.Items.AddRange(New Object() {"1W", "3D", "1D", "12h", "8h", "6h", "4h", "2h", "1h", "30m"})
         Me.XComboBox1.LineColour = System.Drawing.Color.FromArgb(CType(CType(111, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(21, Byte), Integer))
-        Me.XComboBox1.Location = New System.Drawing.Point(737, 127)
+        Me.XComboBox1.Location = New System.Drawing.Point(737, 131)
         Me.XComboBox1.Name = "XComboBox1"
         Me.XComboBox1.Size = New System.Drawing.Size(75, 26)
         Me.XComboBox1.SqaureColour = System.Drawing.Color.FromArgb(CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer))
@@ -275,11 +307,11 @@ Partial Class Configuration
         Me.XLabel6.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.XLabel6.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.XLabel6.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.XLabel6.Location = New System.Drawing.Point(660, 138)
+        Me.XLabel6.Location = New System.Drawing.Point(647, 138)
         Me.XLabel6.Name = "XLabel6"
-        Me.XLabel6.Size = New System.Drawing.Size(71, 15)
+        Me.XLabel6.Size = New System.Drawing.Size(84, 15)
         Me.XLabel6.TabIndex = 107
-        Me.XLabel6.Text = "BOT Period :"
+        Me.XLabel6.Text = "Charts Period :"
         '
         'XLabel5
         '
@@ -288,7 +320,7 @@ Partial Class Configuration
         Me.XLabel5.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.XLabel5.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.XLabel5.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.XLabel5.Location = New System.Drawing.Point(493, 136)
+        Me.XLabel5.Location = New System.Drawing.Point(452, 138)
         Me.XLabel5.Name = "XLabel5"
         Me.XLabel5.Size = New System.Drawing.Size(80, 15)
         Me.XLabel5.TabIndex = 106
@@ -301,7 +333,7 @@ Partial Class Configuration
         Me.XNumeric1.ButtonColour = System.Drawing.Color.FromArgb(CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer))
         Me.XNumeric1.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.XNumeric1.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.XNumeric1.Location = New System.Drawing.Point(579, 129)
+        Me.XNumeric1.Location = New System.Drawing.Point(538, 131)
         Me.XNumeric1.Maximum = CType(30, Long)
         Me.XNumeric1.Minimum = CType(1, Long)
         Me.XNumeric1.Name = "XNumeric1"
@@ -370,38 +402,6 @@ Partial Class Configuration
         Me.TextBoxKey.TextAlign = System.Windows.Forms.HorizontalAlignment.Left
         Me.TextBoxKey.TextColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.TextBoxKey.UseSystemPasswordChar = False
-        '
-        'XButton4
-        '
-        Me.XButton4.BackColor = System.Drawing.Color.Transparent
-        Me.XButton4.BaseColour = System.Drawing.Color.FromArgb(CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer))
-        Me.XButton4.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
-        Me.XButton4.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.XButton4.HoverColour = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer))
-        Me.XButton4.Location = New System.Drawing.Point(700, 205)
-        Me.XButton4.Name = "XButton4"
-        Me.XButton4.PressedColour = System.Drawing.Color.FromArgb(CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer))
-        Me.XButton4.ProgressColour = System.Drawing.Color.FromArgb(CType(CType(184, Byte), Integer), CType(CType(134, Byte), Integer), CType(CType(11, Byte), Integer))
-        Me.XButton4.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.XButton4.Size = New System.Drawing.Size(112, 40)
-        Me.XButton4.TabIndex = 129
-        Me.XButton4.Text = "New Account"
-        '
-        'XButton5
-        '
-        Me.XButton5.BackColor = System.Drawing.Color.Transparent
-        Me.XButton5.BaseColour = System.Drawing.Color.FromArgb(CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer))
-        Me.XButton5.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
-        Me.XButton5.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.XButton5.HoverColour = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer))
-        Me.XButton5.Location = New System.Drawing.Point(700, 252)
-        Me.XButton5.Name = "XButton5"
-        Me.XButton5.PressedColour = System.Drawing.Color.FromArgb(CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer))
-        Me.XButton5.ProgressColour = System.Drawing.Color.FromArgb(CType(CType(184, Byte), Integer), CType(CType(134, Byte), Integer), CType(CType(11, Byte), Integer))
-        Me.XButton5.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.XButton5.Size = New System.Drawing.Size(112, 40)
-        Me.XButton5.TabIndex = 130
-        Me.XButton5.Text = "GitHub"
         '
         'Configuration
         '

@@ -34,14 +34,14 @@ Public Class BOT
     Dim APISecret As String
     Dim Periodo As KlineInterval = KlineInterval.OneDay
     Dim Timer As Integer = 10 'min
-    Dim ind() As String = {"EMA5", "EMA10", "EMA20", "EMA30", "EMA50", "EMA100", "EMA200", "SMA5", "SMA10", "SMA20", "SMA30", "SMA50", "SMA100", "SMA200", "MACD", "MACD-EMA", "HMA", "WMA", "RSI", "CCI"}
+    Dim ind() As String = {"EMA5", "EMA10", "EMA20", "EMA30", "EMA50", "EMA100", "EMA200", "SMA5", "SMA10", "SMA20", "SMA30", "SMA50", "SMA100", "SMA200", "MACD", "MACD-EMA", "WMA", "RSI", "CCI", "W%R"}
     '############################################
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         System.Threading.Thread.CurrentThread.CurrentCulture = New System.Globalization.CultureInfo("en-Us")
         System.Threading.Thread.CurrentThread.CurrentUICulture = New System.Globalization.CultureInfo("en-Us")
-        If NumberFormatInfo.CurrentInfo.NumberDecimalSeparator = "," Then ' Separatore corrente: virgola
-            NumberFormatInfo.CurrentInfo.NumberDecimalSeparator = "." ' carattere da cambiare: punto
+        If NumberFormatInfo.CurrentInfo.NumberDecimalSeparator = "," Then
+            NumberFormatInfo.CurrentInfo.NumberDecimalSeparator = "."
         End If
         LoadConfig()
         LoadChartBTCtot()
@@ -203,9 +203,10 @@ Public Class BOT
                         FormulaSMA(n)
                         FormulaMACD(n)
                         FormulaWMA(n)
-                        FormulaHMA(n)
+                        ' FormulaHMA(n)
                         FormulaRSI(n)
                         FormulaCCI(n)
+                        FormulaWILR(n)
                     End If
                 End If
 
@@ -230,9 +231,8 @@ Public Class BOT
         Catch ex As Exception
         End Try
     End Sub
-    Private Sub FormulaRSI(ByRef n As Integer)
+    Private Sub FormulaRSI(ByRef n As Integer) 'RSI  =  100  -  100 /  ( 1  +  RS ) 
         Try
-            'RSI  =  100  -  100 /  ( 1  +  RS ) 
             ChartX(n).DataManipulator.FinancialFormula(FinancialFormula.RelativeStrengthIndex, "14", "Data:Y4", "RSI")
         Catch ex As Exception
         End Try
@@ -243,9 +243,9 @@ Public Class BOT
         Catch ex As Exception
         End Try
     End Sub
-    Private Sub FormulaSTOCH(ByRef n As Integer)
+    Private Sub FormulaWILR(ByRef n As Integer) '%R = (Highest High - CurrentClose) / (Highest High - Lowest Low) x -100
         Try
-            ChartX(n).DataManipulator.FinancialFormula(FinancialFormula.StochasticIndicator, "20", "Data:Y4", "STOCH")
+            ChartX(n).DataManipulator.FinancialFormula(FinancialFormula.WilliamsR, "14", "Data:Y1,Data:Y2,Data:Y4", "W%R")
         Catch ex As Exception
         End Try
     End Sub
@@ -264,7 +264,7 @@ Public Class BOT
         Catch ex As Exception
         End Try
     End Sub
-    Private Sub FormulaEMA(ByRef n As Integer)
+    Private Sub FormulaEMA(ByRef n As Integer) 'Exponential Moving Average
         Try
             ChartX(n).DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, "5", "Data:Y4", "EMA5")
             ChartX(n).DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, "10", "Data:Y4", "EMA10")
@@ -276,7 +276,7 @@ Public Class BOT
         Catch ex As Exception
         End Try
     End Sub
-    Private Sub FormulaSMA(ByRef n As Integer)
+    Private Sub FormulaSMA(ByRef n As Integer) 'Simple Moving Average
         Try
             ChartX(n).DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "5", "Data:Y4", "SMA5")
             ChartX(n).DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "10", "Data:Y4", "SMA10")
@@ -518,7 +518,7 @@ Public Class BOT
             ElseIf indicator(n, "CCI") < -200 And indicator(n, "CCI") > indicator(n, "CCI", 1) And Not indicator(n, "CCI") <> Nothing Then
                 priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n)) * 3
             End If
-            If indicator(n, "RSI") > 70 And indicator(n, "RSI") <> Nothing Then
+            If indicator(n, "RSI") > 80 And indicator(n, "RSI") <> Nothing Then
                 priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n)) * 3
             ElseIf indicator(n, "RSI") < 20 And indicator(n, "RSI") <> Nothing Then
                 priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n)) * 3
@@ -527,6 +527,11 @@ Public Class BOT
                 priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n)) * 3
             ElseIf (indicator(n, "MACD") - indicator(n, "MACD-EMA")) < 0 And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) < (indicator(n, "MACD", 1) - indicator(n, "MACD-EMA", 1)) And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) <> Nothing Then
                 priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n)) * 3
+            End If
+            If indicator(n, "W%R") > -80 And indicator(n, "W%R") <> Nothing Then
+                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+            ElseIf indicator(n, "W%R") < -20 And indicator(n, "W%R") <> Nothing Then
+                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
             End If
             If indicator(n, "EMA5") < price(n) And indicator(n, "EMA5") <> Nothing Then
                 priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
@@ -601,11 +606,6 @@ Public Class BOT
             If indicator(n, "WMA") < price(n) And indicator(n, "WMA") <> Nothing Then
                 priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
             ElseIf indicator(n, "WMA") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
-            End If
-            If indicator(n, "HMA") < price(n) And indicator(n, "HMA") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
-            ElseIf indicator(n, "HMA") <> Nothing Then
                 priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
             End If
         Next
@@ -729,14 +729,13 @@ Public Class BOT
         Dim dec As Integer = 0
         Dim v As Decimal = VolumeMin(n)
         Dim i As Decimal = 0.5
-        For x As Integer = 0 To 10
-            If v = 1 Then
+        For x As Integer = 0 To 100
+            If Not v < 1 Then
                 Exit For
             Else
                 v = v * 10
                 dec += 1
                 i = i / 10
-
             End If
         Next
         Return Math.Round(vol - i, dec)
