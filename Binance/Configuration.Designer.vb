@@ -22,9 +22,9 @@ Partial Class Configuration
     'Non modificarla mediante l'editor del codice.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
-        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
-        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Me.XThemeContainer1 = New Binance.XThemeContainer()
         Me.Chart1 = New System.Windows.Forms.DataVisualization.Charting.Chart()
         Me.XButton3 = New Binance.XButton()
@@ -45,6 +45,8 @@ Partial Class Configuration
         Me.XLabel3 = New Binance.XLabel()
         Me.TextBoxSecret = New Binance.XNormalTextBox()
         Me.TextBoxKey = New Binance.XNormalTextBox()
+        Me.XButton4 = New Binance.XButton()
+        Me.XButton5 = New Binance.XButton()
         Me.XThemeContainer1.SuspendLayout()
         CType(Me.Chart1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -58,6 +60,8 @@ Partial Class Configuration
         Me.XThemeContainer1.BaseColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.XThemeContainer1.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.XThemeContainer1.ContainerColour = System.Drawing.Color.FromArgb(CType(CType(54, Byte), Integer), CType(CType(54, Byte), Integer), CType(CType(54, Byte), Integer))
+        Me.XThemeContainer1.Controls.Add(Me.XButton5)
+        Me.XThemeContainer1.Controls.Add(Me.XButton4)
         Me.XThemeContainer1.Controls.Add(Me.Chart1)
         Me.XThemeContainer1.Controls.Add(Me.XButton3)
         Me.XThemeContainer1.Controls.Add(Me.XButton2)
@@ -90,24 +94,24 @@ Partial Class Configuration
         '
         Me.Chart1.BackColor = System.Drawing.Color.Transparent
         Me.Chart1.BorderlineColor = System.Drawing.Color.Transparent
-        ChartArea1.BackColor = System.Drawing.Color.Transparent
-        ChartArea1.BackImageTransparentColor = System.Drawing.Color.Transparent
-        ChartArea1.BackSecondaryColor = System.Drawing.Color.Transparent
-        ChartArea1.BorderColor = System.Drawing.Color.Transparent
-        ChartArea1.Name = "ChartArea1"
-        Me.Chart1.ChartAreas.Add(ChartArea1)
-        Legend1.BackColor = System.Drawing.Color.Transparent
-        Legend1.ForeColor = System.Drawing.Color.Gainsboro
-        Legend1.Name = "Legend1"
-        Me.Chart1.Legends.Add(Legend1)
+        ChartArea2.BackColor = System.Drawing.Color.Transparent
+        ChartArea2.BackImageTransparentColor = System.Drawing.Color.Transparent
+        ChartArea2.BackSecondaryColor = System.Drawing.Color.Transparent
+        ChartArea2.BorderColor = System.Drawing.Color.Transparent
+        ChartArea2.Name = "ChartArea1"
+        Me.Chart1.ChartAreas.Add(ChartArea2)
+        Legend2.BackColor = System.Drawing.Color.Transparent
+        Legend2.ForeColor = System.Drawing.Color.Gainsboro
+        Legend2.Name = "Legend1"
+        Me.Chart1.Legends.Add(Legend2)
         Me.Chart1.Location = New System.Drawing.Point(369, 235)
         Me.Chart1.Name = "Chart1"
         Me.Chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel
-        Series1.ChartArea = "ChartArea1"
-        Series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut
-        Series1.Legend = "Legend1"
-        Series1.Name = "Asset"
-        Me.Chart1.Series.Add(Series1)
+        Series2.ChartArea = "ChartArea1"
+        Series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut
+        Series2.Legend = "Legend1"
+        Series2.Name = "Asset"
+        Me.Chart1.Series.Add(Series2)
         Me.Chart1.Size = New System.Drawing.Size(285, 218)
         Me.Chart1.TabIndex = 128
         Me.Chart1.Text = "Chart1"
@@ -367,6 +371,38 @@ Partial Class Configuration
         Me.TextBoxKey.TextColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.TextBoxKey.UseSystemPasswordChar = False
         '
+        'XButton4
+        '
+        Me.XButton4.BackColor = System.Drawing.Color.Transparent
+        Me.XButton4.BaseColour = System.Drawing.Color.FromArgb(CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer))
+        Me.XButton4.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
+        Me.XButton4.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.XButton4.HoverColour = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer))
+        Me.XButton4.Location = New System.Drawing.Point(700, 205)
+        Me.XButton4.Name = "XButton4"
+        Me.XButton4.PressedColour = System.Drawing.Color.FromArgb(CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer))
+        Me.XButton4.ProgressColour = System.Drawing.Color.FromArgb(CType(CType(184, Byte), Integer), CType(CType(134, Byte), Integer), CType(CType(11, Byte), Integer))
+        Me.XButton4.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.XButton4.Size = New System.Drawing.Size(112, 40)
+        Me.XButton4.TabIndex = 129
+        Me.XButton4.Text = "New Account"
+        '
+        'XButton5
+        '
+        Me.XButton5.BackColor = System.Drawing.Color.Transparent
+        Me.XButton5.BaseColour = System.Drawing.Color.FromArgb(CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer))
+        Me.XButton5.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
+        Me.XButton5.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.XButton5.HoverColour = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer))
+        Me.XButton5.Location = New System.Drawing.Point(700, 252)
+        Me.XButton5.Name = "XButton5"
+        Me.XButton5.PressedColour = System.Drawing.Color.FromArgb(CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer))
+        Me.XButton5.ProgressColour = System.Drawing.Color.FromArgb(CType(CType(184, Byte), Integer), CType(CType(134, Byte), Integer), CType(CType(11, Byte), Integer))
+        Me.XButton5.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.XButton5.Size = New System.Drawing.Size(112, 40)
+        Me.XButton5.TabIndex = 130
+        Me.XButton5.Text = "GitHub"
+        '
         'Configuration
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -405,4 +441,6 @@ Partial Class Configuration
     Friend WithEvents XButton2 As XButton
     Friend WithEvents XButton3 As XButton
     Friend WithEvents Chart1 As DataVisualization.Charting.Chart
+    Friend WithEvents XButton5 As XButton
+    Friend WithEvents XButton4 As XButton
 End Class

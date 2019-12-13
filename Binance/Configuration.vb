@@ -131,4 +131,12 @@
         End If
 
     End Sub
+
+    Private Sub XButton5_Click(sender As Object, e As EventArgs) Handles XButton5.Click
+        Process.Start("https://github.com/Dellai-V/Binance-Robot-Wallet")
+    End Sub
+
+    Private Sub XButton4_Click(sender As Object, e As EventArgs) Handles XButton4.Click
+        Process.Start("https://www.binance.com/en/register?ref=EORD9N10")
+    End Sub
 End Class
