@@ -2,3 +2,4 @@
 **/Binance/bin/
 **/Binance/obj/
 **/packages/
+*.pfx
