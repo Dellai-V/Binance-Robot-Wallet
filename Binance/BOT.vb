@@ -27,7 +27,7 @@ Public Class BOT
     Dim QuoteASSET As New List(Of Integer)
     Public ASSETDisp As New List(Of String)
     Dim client As BinanceClient = New BinanceClient()
-
+    Public stato As Boolean = False
     '#############  Configurazione  #############
     ' set app.confing 
     Dim APIkey As String
@@ -44,7 +44,10 @@ Public Class BOT
             NumberFormatInfo.CurrentInfo.NumberDecimalSeparator = "."
         End If
         LoadConfig()
-        LoadChartBTCtot()
+        If stato = True Then
+            LoadChartBTCtot()
+        End If
+
     End Sub
 
     Public Sub LoadConfig()
@@ -80,9 +83,10 @@ Public Class BOT
         If APIkey.Length = 64 And APISecret.Length = 64 Then
             client.SetApiCredentials(APIkey, APISecret)
             info = client.GetExchangeInfo()
-            If info.Error Is Nothing Then
+            Dim accountInfo = client.GetAccountInfo()
+            If accountInfo.Error Is Nothing Then
                 LoadVar()
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > CONFIG :  Asset : " & ASSET.Length & "  |  Exchange : " & SCAMBI.Count & "  |  Indicators : " & ind.Count & "  |  Update Time : " & Timer & " min  | Period : " & Periodo.ToString & vbCrLf)
+                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " >  Account Type : " & accountInfo.Data.AccountType & "  |   Asset : " & ASSET.Length & "  |  Exchange : " & SCAMBI.Count & "  |  Indicators : " & ind.Count & "  |  Update Time : " & Timer & " min  | Period : " & Periodo.ToString & vbCrLf)
                 stato = True
             Else
                 TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR API : wrong settings" & vbCrLf)
@@ -173,7 +177,7 @@ Public Class BOT
     End Sub
 
 
-    Private Sub OHLC() 'Aggiorna grafici
+    Private Sub OHLCex() 'Aggiorna grafici
         For n As Integer = 0 To ChartX.Length - 1
             Try
                 If SCAMBI(n) = Nothing Then
@@ -217,13 +221,56 @@ Public Class BOT
             End Try
         Next
     End Sub
+    Private Sub OHLC() 'Aggiorna grafici
+        For n As Integer = 0 To ChartX.Length - 1
+            Try
+                If SCAMBI(n) = Nothing Then
+                    Exit Sub
+                End If
+                Dim trade_stream As Threading.Tasks.Task(Of CryptoExchange.Net.Objects.WebCallResult(Of IEnumerable(Of BinanceKline)))
+                If last(n) = Nothing Then
+                    trade_stream = client.GetKlinesAsync(SCAMBI(n), Periodo)
+                Else
+                    trade_stream = client.GetKlinesAsync(SCAMBI(n), Periodo, startTime:=last(n))
+                    ChartX(n).Series("Data").Points.RemoveAt(ChartX(n).Series("Data").Points.Count - 1)
+                End If
+                If trade_stream.Result.Error Is Nothing Then
+                    If trade_stream.Result.Data.Count > 0 Then
+                        For x As Integer = 0 To trade_stream.Result.Data.Count - 1
+                            last(n) = trade_stream.Result.Data(x).OpenTime
+                            price(n) = trade_stream.Result.Data(x).Close
+                            priceMax(n) = trade_stream.Result.Data(x).High
+                            priceMin(n) = trade_stream.Result.Data(x).Low
+                            ChartX(n).Series("Data").Points.AddXY(trade_stream.Result.Data(x).CloseTime, trade_stream.Result.Data(x).High, trade_stream.Result.Data(x).Low, trade_stream.Result.Data(x).Open, trade_stream.Result.Data(x).Close)
+                        Next
+                        For i As Integer = 0 To ind.Length - 1
+                            ChartX(n).Series(ind(i)).Points.Clear()
+                        Next
+                        ' Y1 = Higt  |  Y2 = Low  |  Y3 = Open  |  Y4 = Colose
+                        FormulaEMA(n)
+                        FormulaSMA(n)
+                        FormulaMACD(n)
+                        FormulaWMA(n)
+                        ' FormulaHMA(n)
+                        FormulaRSI(n)
+                        FormulaCCI(n)
+                        FormulaWILR(n)
+                    End If
+                End If
+
+            Catch ex As Exception
+                TextLog.AppendText(System.DateTime.UtcNow.ToUniversalTime & " > ERROR CHART " & SCAMBI(n) & " : " & ex.Message & vbCrLf)
+                last(n) = Nothing
+                ChartX(n).Series("Data").Points.Clear()
+            End Try
+        Next
+    End Sub
     Private Function indicator(ByVal n As Integer, ByVal ind As String, Optional ByRef p As Integer = 0) As Decimal
         Try
             Return ChartX(n).Series(ind).Points((ChartX(n).Series(ind).Points.Count - (1 + p))).YValues(0)
         Catch ex As Exception
             Return Nothing
         End Try
-
     End Function
     Private Sub FormulaCCI(ByRef n As Integer)
         Try           'Commodity Channel Index
@@ -398,13 +445,22 @@ Public Class BOT
         Dim path As String = Directory.GetCurrentDirectory() & "\BTCtot"
         If File.Exists(path) Then
             Chart2.Series(0).Points.Clear()
+            Dim delLine As Boolean = False
+            Dim lines As List(Of String) = New List(Of String)
             Using sr As StreamReader = File.OpenText(path)
                 Do While sr.Peek() >= 0
                     Dim cut() As String = sr.ReadLine().Split("@")
                     Chart2.Series(0).Points.AddXY(DateTime.FromOADate(cut(0)), cut(1))
+                    If cut(0) < DateTime.UtcNow.ToUniversalTime.AddDays(-30).ToOADate Then
+                        delLine = True
+                    Else
+                        lines.Add(sr.ReadLine())
+                    End If
                 Loop
             End Using
-
+            If delLine = True Then
+                System.IO.File.WriteAllLines(path, lines)
+            End If
         End If
     End Sub
     Private Sub ChartBTCtot()
@@ -747,9 +803,6 @@ Public Class BOT
             VerificaBilancio()
             VerificaMigliorePeggiore()
             UpdateListView()
-        Else
-            OHLC()
-            UpdateListView()
         End If
 
         Timer1.Start()
@@ -757,7 +810,7 @@ Public Class BOT
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Trade()
     End Sub
-    Public stato As Boolean = False
+
     Private Sub XComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs)
         last = Nothing
         ReDim last(SCAMBI.Count - 1)
