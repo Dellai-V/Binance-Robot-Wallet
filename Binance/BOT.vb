@@ -47,9 +47,7 @@ Public Class BOT
         If stato = True Then
             LoadChartBTCtot()
         End If
-
     End Sub
-
     Public Sub LoadConfig()
         Timer = My.Settings.UPtimer
         Timer1.Interval = Timer * 60000
@@ -108,6 +106,7 @@ Public Class BOT
         QuoteASSET.Clear()
         ASSETDisp.Clear()
         MinPrice.Clear()
+        VolumeMin.Clear()
         XComboBox2.Items.Clear()
         ASSETDisp.Add(info.Data.Symbols(0).BaseAsset)
         For x As Integer = 0 To info.Data.Symbols.Count - 1
@@ -173,52 +172,6 @@ Public Class BOT
                 ChartX(n).Series(ind(i)).XValueType = ChartValueType.DateTime
                 ChartX(n).Series(ind(i)).Sort(PointSortOrder.Ascending, "X")
             Next
-        Next
-    End Sub
-
-
-    Private Sub OHLCex() 'Aggiorna grafici
-        For n As Integer = 0 To ChartX.Length - 1
-            Try
-                If SCAMBI(n) = Nothing Then
-                    Exit Sub
-                End If
-                Dim trade_stream As CryptoExchange.Net.Objects.WebCallResult(Of IEnumerable(Of BinanceKline))
-                If last(n) = Nothing Then
-                    trade_stream = client.GetKlines(SCAMBI(n), Periodo)
-                Else
-                    trade_stream = client.GetKlines(SCAMBI(n), Periodo, startTime:=last(n))
-                    ChartX(n).Series("Data").Points.RemoveAt(ChartX(n).Series("Data").Points.Count - 1)
-                End If
-                If trade_stream.Error Is Nothing Then
-                    If trade_stream.Data.Count > 0 Then
-                        For x As Integer = 0 To trade_stream.Data.Count - 1
-                            last(n) = trade_stream.Data(x).OpenTime
-                            price(n) = trade_stream.Data(x).Close
-                            priceMax(n) = trade_stream.Data(x).High
-                            priceMin(n) = trade_stream.Data(x).Low
-                            ChartX(n).Series("Data").Points.AddXY(trade_stream.Data(x).CloseTime, trade_stream.Data(x).High, trade_stream.Data(x).Low, trade_stream.Data(x).Open, trade_stream.Data(x).Close)
-                        Next
-                        For i As Integer = 0 To ind.Length - 1
-                            ChartX(n).Series(ind(i)).Points.Clear()
-                        Next
-                        ' Y1 = Higt  |  Y2 = Low  |  Y3 = Open  |  Y4 = Colose
-                        FormulaEMA(n)
-                        FormulaSMA(n)
-                        FormulaMACD(n)
-                        FormulaWMA(n)
-                        ' FormulaHMA(n)
-                        FormulaRSI(n)
-                        FormulaCCI(n)
-                        FormulaWILR(n)
-                    End If
-                End If
-
-            Catch ex As Exception
-                TextLog.AppendText(System.DateTime.UtcNow.ToUniversalTime & " > ERROR CHART " & SCAMBI(n) & " : " & ex.Message & vbCrLf)
-                last(n) = Nothing
-                ChartX(n).Series("Data").Points.Clear()
-            End Try
         Next
     End Sub
     Private Sub OHLC() 'Aggiorna grafici
@@ -562,7 +515,6 @@ Public Class BOT
             TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR Open Order : " & ex.Message & vbCrLf)
         End Try
     End Sub
-
     Dim priority() As Integer
     Private Sub VerificaMigliorePeggiore()
         Dim prioTot As Integer = 0
