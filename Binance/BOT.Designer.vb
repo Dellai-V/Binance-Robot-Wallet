@@ -23,11 +23,11 @@ Partial Class BOT
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
-        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
-        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
-        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
-        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
+        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
+        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
+        Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
@@ -70,6 +70,7 @@ Partial Class BOT
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader7 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.XLabel8 = New Binance.XLabel()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.XThemeContainer1.SuspendLayout()
         CType(Me.Chart2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -102,6 +103,7 @@ Partial Class BOT
         Me.XThemeContainer1.BaseColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.XThemeContainer1.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.XThemeContainer1.ContainerColour = System.Drawing.Color.FromArgb(CType(CType(54, Byte), Integer), CType(CType(54, Byte), Integer), CType(CType(54, Byte), Integer))
+        Me.XThemeContainer1.Controls.Add(Me.XLabel8)
         Me.XThemeContainer1.Controls.Add(Me.XLabel7)
         Me.XThemeContainer1.Controls.Add(Me.XButton4)
         Me.XThemeContainer1.Controls.Add(Me.XButton3)
@@ -365,26 +367,26 @@ Partial Class BOT
         '
         Me.Chart2.BackColor = System.Drawing.Color.Transparent
         Me.Chart2.BorderlineColor = System.Drawing.Color.Transparent
-        ChartArea1.AxisX.IsStartedFromZero = False
-        ChartArea1.AxisX2.IsStartedFromZero = False
-        ChartArea1.AxisY.IsStartedFromZero = False
-        ChartArea1.AxisY2.IsStartedFromZero = False
-        ChartArea1.BackColor = System.Drawing.Color.Transparent
-        ChartArea1.BackImageTransparentColor = System.Drawing.Color.Transparent
-        ChartArea1.BackSecondaryColor = System.Drawing.Color.Transparent
-        ChartArea1.BorderColor = System.Drawing.Color.Transparent
-        ChartArea1.Name = "ChartArea1"
-        Me.Chart2.ChartAreas.Add(ChartArea1)
+        ChartArea3.AxisX.IsStartedFromZero = False
+        ChartArea3.AxisX2.IsStartedFromZero = False
+        ChartArea3.AxisY.IsStartedFromZero = False
+        ChartArea3.AxisY2.IsStartedFromZero = False
+        ChartArea3.BackColor = System.Drawing.Color.Transparent
+        ChartArea3.BackImageTransparentColor = System.Drawing.Color.Transparent
+        ChartArea3.BackSecondaryColor = System.Drawing.Color.Transparent
+        ChartArea3.BorderColor = System.Drawing.Color.Transparent
+        ChartArea3.Name = "ChartArea1"
+        Me.Chart2.ChartAreas.Add(ChartArea3)
         Me.Chart2.Location = New System.Drawing.Point(811, 496)
         Me.Chart2.Name = "Chart2"
         Me.Chart2.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel
-        Series1.ChartArea = "ChartArea1"
-        Series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
-        Series1.Color = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
-        Series1.IsVisibleInLegend = False
-        Series1.Name = "Asset"
-        Series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime
-        Me.Chart2.Series.Add(Series1)
+        Series3.ChartArea = "ChartArea1"
+        Series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line
+        Series3.Color = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Series3.IsVisibleInLegend = False
+        Series3.Name = "Asset"
+        Series3.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime
+        Me.Chart2.Series.Add(Series3)
         Me.Chart2.Size = New System.Drawing.Size(1097, 218)
         Me.Chart2.TabIndex = 130
         Me.Chart2.Text = "Chart2"
@@ -407,24 +409,24 @@ Partial Class BOT
         '
         Me.Chart1.BackColor = System.Drawing.Color.Transparent
         Me.Chart1.BorderlineColor = System.Drawing.Color.Transparent
-        ChartArea2.BackColor = System.Drawing.Color.Transparent
-        ChartArea2.BackImageTransparentColor = System.Drawing.Color.Transparent
-        ChartArea2.BackSecondaryColor = System.Drawing.Color.Transparent
-        ChartArea2.BorderColor = System.Drawing.Color.Transparent
-        ChartArea2.Name = "ChartArea1"
-        Me.Chart1.ChartAreas.Add(ChartArea2)
-        Legend1.BackColor = System.Drawing.Color.Transparent
-        Legend1.ForeColor = System.Drawing.Color.Gainsboro
-        Legend1.Name = "Legend1"
-        Me.Chart1.Legends.Add(Legend1)
+        ChartArea4.BackColor = System.Drawing.Color.Transparent
+        ChartArea4.BackImageTransparentColor = System.Drawing.Color.Transparent
+        ChartArea4.BackSecondaryColor = System.Drawing.Color.Transparent
+        ChartArea4.BorderColor = System.Drawing.Color.Transparent
+        ChartArea4.Name = "ChartArea1"
+        Me.Chart1.ChartAreas.Add(ChartArea4)
+        Legend2.BackColor = System.Drawing.Color.Transparent
+        Legend2.ForeColor = System.Drawing.Color.Gainsboro
+        Legend2.Name = "Legend1"
+        Me.Chart1.Legends.Add(Legend2)
         Me.Chart1.Location = New System.Drawing.Point(820, 720)
         Me.Chart1.Name = "Chart1"
         Me.Chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel
-        Series2.ChartArea = "ChartArea1"
-        Series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut
-        Series2.Legend = "Legend1"
-        Series2.Name = "Asset"
-        Me.Chart1.Series.Add(Series2)
+        Series4.ChartArea = "ChartArea1"
+        Series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut
+        Series4.Legend = "Legend1"
+        Series4.Name = "Asset"
+        Me.Chart1.Series.Add(Series4)
         Me.Chart1.Size = New System.Drawing.Size(285, 218)
         Me.Chart1.TabIndex = 127
         Me.Chart1.Text = "Chart1"
@@ -586,6 +588,19 @@ Partial Class BOT
         Me.ColumnHeader8.Text = "Low"
         Me.ColumnHeader8.Width = 84
         '
+        'XLabel8
+        '
+        Me.XLabel8.AutoSize = True
+        Me.XLabel8.BackColor = System.Drawing.Color.Transparent
+        Me.XLabel8.Font = New System.Drawing.Font("Consolas", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.XLabel8.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.XLabel8.ForeColor = System.Drawing.Color.Silver
+        Me.XLabel8.Location = New System.Drawing.Point(880, 1026)
+        Me.XLabel8.Name = "XLabel8"
+        Me.XLabel8.Size = New System.Drawing.Size(63, 19)
+        Me.XLabel8.TabIndex = 146
+        Me.XLabel8.Text = " ~ 0 $"
+        '
         'BOT
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -649,4 +664,5 @@ Partial Class BOT
     Friend WithEvents XButton4 As XButton
     Friend WithEvents XButton3 As XButton
     Friend WithEvents XLabel7 As XLabel
+    Friend WithEvents XLabel8 As XLabel
 End Class

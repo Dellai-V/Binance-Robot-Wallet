@@ -4,7 +4,6 @@ Imports System.Linq
 Imports Binance.Net
 Imports Binance.Net.Objects
 Imports System.IO
-
 Public Class BOT
     Dim ChartX() As Chart
     Dim info As CryptoExchange.Net.Objects.WebCallResult(Of BinanceExchangeInfo)
@@ -36,7 +35,6 @@ Public Class BOT
     Dim Timer As Integer = 10 'min
     Dim ind() As String = {"EMA5", "EMA10", "EMA20", "EMA30", "EMA50", "EMA100", "EMA200", "SMA5", "SMA10", "SMA20", "SMA30", "SMA50", "SMA100", "SMA200", "MACD", "MACD-EMA", "WMA", "RSI", "CCI", "W%R"}
     '############################################
-
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         System.Threading.Thread.CurrentThread.CurrentCulture = New System.Globalization.CultureInfo("en-Us")
         System.Threading.Thread.CurrentThread.CurrentUICulture = New System.Globalization.CultureInfo("en-Us")
@@ -138,9 +136,7 @@ Public Class BOT
                     ASSETDisp.Add(info.Data.Symbols(x).QuoteAsset)
                 End If
             Next
-
         Next
-
         Dim sl As Integer = SCAMBI.Count - 1
         ReDim last(sl)
         ReDim price(sl)
@@ -210,7 +206,6 @@ Public Class BOT
                         FormulaWILR(n)
                     End If
                 End If
-
             Catch ex As Exception
                 TextLog.AppendText(System.DateTime.UtcNow.ToUniversalTime & " > ERROR CHART " & SCAMBI(n) & " : " & ex.Message & vbCrLf)
                 last(n) = Nothing
@@ -378,8 +373,16 @@ Public Class BOT
             CalcoloBTC()
             Chartinfo()
             ChartBTCtot()
-
             XLabel1.Text = "Tot : " & Math.Round(BTCtot, 6) & " " & ASSET(0)
+            Dim USDtot As Decimal = 0
+            For a As Integer = 0 To SCAMBI.Count - 1
+                If BaseASSET(a) = 0 Then
+                    If ASSET(QuoteASSET(a)) = "USDT" Or ASSET(QuoteASSET(a)) = "BUSD" Or ASSET(QuoteASSET(a)) = "PAX" Or ASSET(QuoteASSET(a)) = "TUSD" Or ASSET(QuoteASSET(a)) = "USDC" Then
+                        USDtot = BTCtot * price(a)
+                    End If
+                End If
+            Next
+            XLabel8.Text = " ~ " & Math.Round(USDtot, 2) & " $"
         Catch ex As Exception
             TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR Balances : " & ex.Message & vbCrLf)
         End Try
@@ -388,7 +391,6 @@ Public Class BOT
     Private Sub CalcoloBTC()
         ToBTC(0) = 1 'Valore base 
         For a As Integer = 0 To SCAMBI.Count - 1
-
             If QuoteASSET(a) = 0 Then
                 ToBTC(BaseASSET(a)) = price(a)
             End If
@@ -475,7 +477,6 @@ Public Class BOT
             XLabel3.ForeColor = Color.Salmon
         End If
     End Sub
-
     Private Sub VerificaPosizioniAperte()
         Try
             Dim ordini = client.GetOpenOrders
@@ -770,13 +771,11 @@ Public Class BOT
             VerificaMigliorePeggiore()
             UpdateListView()
         End If
-
         Timer1.Start()
     End Sub
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Trade()
     End Sub
-
     Private Sub XComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs)
         last = Nothing
         ReDim last(SCAMBI.Count - 1)
@@ -785,8 +784,6 @@ Public Class BOT
         Configuration.Show()
         CheckBox1.Checked = False
     End Sub
-
-
     Private Sub ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem1.Click
         If ListView4.SelectedItems.Count = 1 Then
             client.CancelOrder(ListView4.SelectedItems(0).Text, ListView4.SelectedItems(0).SubItems(5).Text)
@@ -794,26 +791,21 @@ Public Class BOT
             VerificaPosizioniAperte()
         End If
     End Sub
-
     Private Sub XComboBox1_SelectedIndexChanged_1(sender As Object, e As EventArgs) Handles XComboBox1.SelectedIndexChanged
         XButton2.Text = XComboBox1.SelectedItem
         XNormalTextBox1.Text = ListView2.Items(XComboBox2.SelectedIndex).SubItems(1).Text
     End Sub
-
     Private Sub XComboBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles XComboBox2.SelectedIndexChanged
         XLabel4.Text = ASSET(QuoteASSET(XComboBox2.SelectedIndex))
         XNormalTextBox1.Text = ListView2.Items(XComboBox2.SelectedIndex).SubItems(1).Text
     End Sub
-
     Private Sub XButton3_Click(sender As Object, e As EventArgs) Handles XButton3.Click
         '-
         If XComboBox1.SelectedItem = "SELL" And ListView2.Items(XComboBox2.SelectedIndex).SubItems(1).Text >= XNormalTextBox1.Text Then
         Else
             XNormalTextBox1.Text = Convert.ToDecimal(XNormalTextBox1.Text) - MinPrice(XComboBox2.SelectedIndex)
         End If
-
     End Sub
-
     Private Sub XButton4_Click(sender As Object, e As EventArgs) Handles XButton4.Click
         '+
         If XComboBox1.SelectedItem = "BUY" And ListView2.Items(XComboBox2.SelectedIndex).SubItems(1).Text <= XNormalTextBox1.Text Then
@@ -821,7 +813,6 @@ Public Class BOT
             XNormalTextBox1.Text = Convert.ToDecimal(XNormalTextBox1.Text) + MinPrice(XComboBox2.SelectedIndex)
         End If
     End Sub
-
     Private Sub XButton2_Click(sender As Object, e As EventArgs) Handles XButton2.Click
         If XComboBox1.SelectedItem = "BUY" And XComboBox3.SelectedItem = "LIMIT" Then
             Try
@@ -857,5 +848,4 @@ Public Class BOT
             End Try
         End If
     End Sub
-
 End Class
