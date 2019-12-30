@@ -293,10 +293,13 @@ Public Class BOT
             ListView2.Items(x).SubItems(1).Text = price(x)
             ListView2.Items(x).SubItems(2).Text = priceMax(x)
             ListView2.Items(x).SubItems(3).Text = priceMin(x)
-            ListView2.Items(x).SubItems(4).Text = Math.Round(indicator(x, "EMA10"), 8)
-            ListView2.Items(x).SubItems(5).Text = Math.Round(indicator(x, "RSI"), 2)
-            ListView2.Items(x).SubItems(6).Text = Math.Round(indicator(x, "MACD") - indicator(x, "MACD-EMA"), 8)     '  MACDDIF = MACD - MACD-EMA
-            ListView2.Items(x).SubItems(7).Text = Math.Round(indicator(x, "CCI"), 2)
+            For i As Integer = 0 To ind.Length - 1
+                If Not Nothing = indicator(x, ind(i)) Then
+                    ListView2.Items(x).SubItems(i + 4).Text = Math.Round(indicator(x, ind(i)), 8)
+                Else
+                    ListView2.Items(x).SubItems(i + 4).Text = "nd"
+                End If
+            Next
             If priority(BaseASSET(x)) > priority(QuoteASSET(x)) Then
                 ListView2.Items(x).ForeColor = Color.DarkSeaGreen
             Else
@@ -313,15 +316,26 @@ Public Class BOT
     Private Sub MakeListView()
         Dim p As Boolean = False
         ListView2.Items.Clear()
+        ListView2.Columns.Clear()
+        ListView2.Columns.Add("Name", 100)
+        ListView2.Columns.Add("Price", 100)
+        ListView2.Columns.Add("Higth", 100)
+        ListView2.Columns.Add("Low", 100)
+        For i As Integer = 0 To ind.Length - 1
+            ListView2.Columns.Add(ind(i), 100)
+        Next
         For x As Integer = 0 To SCAMBI.Count - 1
             ListView2.Items.Add(SCAMBI(x))
             ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = price(x)
             ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = priceMax(x)
             ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = priceMin(x)
-            ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = Math.Round(indicator(x, "EMA10"), 8)
-            ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = Math.Round(indicator(x, "RSI"), 2)
-            ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = Math.Round(indicator(x, "MACD") - indicator(x, "MACD-EMA"), 8)
-            ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = Math.Round(indicator(x, "CCI"), 2)
+            For i As Integer = 0 To ind.Length - 1
+                If Not Nothing = indicator(x, ind(i)) Then
+                    ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = Math.Round(indicator(x, ind(i)), 8)
+                Else
+                    ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = "nd"
+                End If
+            Next
             If p = False Then
                 ListView2.Items(x).BackColor = Color.FromArgb(35, 35, 35)
                 p = True

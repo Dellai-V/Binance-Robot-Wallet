@@ -70,10 +70,6 @@ Partial Class BOT
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader7 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader11 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader12 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ContextMenuStrip1.SuspendLayout()
         Me.XThemeContainer1.SuspendLayout()
         CType(Me.Chart2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -558,7 +554,7 @@ Partial Class BOT
         'ListView2
         '
         Me.ListView2.BackColor = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
-        Me.ListView2.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader5, Me.ColumnHeader6, Me.ColumnHeader7, Me.ColumnHeader8, Me.ColumnHeader9, Me.ColumnHeader10, Me.ColumnHeader11, Me.ColumnHeader12})
+        Me.ListView2.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader5, Me.ColumnHeader6, Me.ColumnHeader7, Me.ColumnHeader8})
         Me.ListView2.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListView2.ForeColor = System.Drawing.Color.Transparent
         Me.ListView2.HideSelection = False
@@ -590,26 +586,6 @@ Partial Class BOT
         Me.ColumnHeader8.Text = "Low"
         Me.ColumnHeader8.Width = 84
         '
-        'ColumnHeader9
-        '
-        Me.ColumnHeader9.Text = "EMA 10"
-        Me.ColumnHeader9.Width = 103
-        '
-        'ColumnHeader10
-        '
-        Me.ColumnHeader10.Text = "RSI 14"
-        Me.ColumnHeader10.Width = 101
-        '
-        'ColumnHeader11
-        '
-        Me.ColumnHeader11.Text = "DIF-MACD"
-        Me.ColumnHeader11.Width = 111
-        '
-        'ColumnHeader12
-        '
-        Me.ColumnHeader12.Text = "CCI 20"
-        Me.ColumnHeader12.Width = 83
-        '
         'BOT
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -637,10 +613,6 @@ Partial Class BOT
     Friend WithEvents ColumnHeader6 As ColumnHeader
     Friend WithEvents ColumnHeader7 As ColumnHeader
     Friend WithEvents ColumnHeader8 As ColumnHeader
-    Friend WithEvents ColumnHeader9 As ColumnHeader
-    Friend WithEvents ColumnHeader10 As ColumnHeader
-    Friend WithEvents ColumnHeader11 As ColumnHeader
-    Friend WithEvents ColumnHeader12 As ColumnHeader
     Friend WithEvents Timer1 As Timer
     Friend WithEvents ListView3 As ListView
     Friend WithEvents ColumnHeader17 As ColumnHeader
