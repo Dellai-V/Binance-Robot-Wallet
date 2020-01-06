@@ -31,7 +31,7 @@ Public Class BOT
     ' set app.confing 
     Dim APIkey As String
     Dim APISecret As String
-    Dim Periodo As KlineInterval = KlineInterval.OneDay
+    Dim Periodo As New List(Of String)
     Dim Timer As Integer = 10 'min
     Dim ind() As String = {"EMA5", "EMA10", "EMA20", "EMA30", "EMA50", "EMA100", "EMA200", "SMA5", "SMA10", "SMA20", "SMA30", "SMA50", "SMA100", "SMA200", "MACD", "MACD-EMA", "WMA", "RSI", "CCI", "W%R"}
     '############################################
@@ -48,41 +48,53 @@ Public Class BOT
     End Sub
     Public Sub LoadConfig()
         Timer = My.Settings.UPtimer
-        Timer1.Interval = Timer * 60000
-        Select Case My.Settings.period
-            Case "1W"
-                Periodo = KlineInterval.OneWeek
-            Case "3D"
-                Periodo = KlineInterval.ThreeDay
-            Case "1D"
-                Periodo = KlineInterval.OneDay
-            Case "12h"
-                Periodo = KlineInterval.TwelveHour
-            Case "8h"
-                Periodo = KlineInterval.EightHour
-            Case "6h"
-                Periodo = KlineInterval.SixHour
-            Case "4h"
-                Periodo = KlineInterval.FourHour
-            Case "2h"
-                Periodo = KlineInterval.TwoHour
-            Case "1h"
-                Periodo = KlineInterval.OneHour
-            Case "30m"
-                Periodo = KlineInterval.ThirtyMinutes
-        End Select
-        LoadAPI()
-    End Sub
-    Public Sub LoadAPI()
         APIkey = My.Settings.APIkey
         APISecret = My.Settings.APIsecret
+        Timer1.Interval = Timer * 60000
+        LoadAPI()
+    End Sub
+    Private Function Interval(ByRef i As String) As KlineInterval
+        Select Case i
+            Case "1W"
+                Return KlineInterval.OneWeek
+            Case "3D"
+                Return KlineInterval.ThreeDay
+            Case "1D"
+                Return KlineInterval.OneDay
+            Case "12h"
+                Return KlineInterval.TwelveHour
+            Case "8h"
+                Return KlineInterval.EightHour
+            Case "6h"
+                Return KlineInterval.SixHour
+            Case "4h"
+                Return KlineInterval.FourHour
+            Case "2h"
+                Return KlineInterval.TwoHour
+            Case "1h"
+                Return KlineInterval.OneHour
+            Case "30m"
+                Return KlineInterval.ThirtyMinutes
+            Case "15m"
+                Return KlineInterval.FifteenMinutes
+            Case "5m"
+                Return KlineInterval.FiveMinutes
+            Case "3m"
+                Return KlineInterval.ThreeMinutes
+            Case "1m"
+                Return KlineInterval.OneMinute
+            Case Else
+                Return KlineInterval.ThreeDay
+        End Select
+    End Function
+    Public Sub LoadAPI()
         If APIkey.Length = 64 And APISecret.Length = 64 Then
             client.SetApiCredentials(APIkey, APISecret)
             info = client.GetExchangeInfo()
             Dim accountInfo = client.GetAccountInfo()
             If accountInfo.Error Is Nothing Then
                 LoadVar()
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " >  Account Type : " & accountInfo.Data.AccountType & "  |   Asset : " & ASSET.Length & "  |  Exchange : " & SCAMBI.Count & "  |  Indicators : " & ind.Count & "  |  Update Time : " & Timer & " min  | Period : " & Periodo.ToString & vbCrLf)
+                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " >  Account Type : " & accountInfo.Data.AccountType & "  |   Asset : " & ASSET.Length & "  |  Exchange : " & SCAMBI.Count & "  |  Indicators : " & ind.Count & "  |  Update Time : " & Timer & " min" & vbCrLf)
                 stato = True
             Else
                 TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR API : wrong settings" & vbCrLf)
@@ -105,36 +117,40 @@ Public Class BOT
         ASSETDisp.Clear()
         MinPrice.Clear()
         VolumeMin.Clear()
+        Periodo.Clear()
         XComboBox2.Items.Clear()
         ASSETDisp.Add(info.Data.Symbols(0).BaseAsset)
-        For x As Integer = 0 To info.Data.Symbols.Count - 1
-            For a As Integer = 0 To ass
-                For b As Integer = 0 To ass
-                    If ASSET(a) = info.Data.Symbols(x).BaseAsset And ASSET(b) = info.Data.Symbols(x).QuoteAsset Then
-                        SCAMBI.Add(info.Data.Symbols(x).Name)
-                        XComboBox2.Items.Add(info.Data.Symbols(x).Name)
-                        BaseASSET.Add(a)
-                        QuoteASSET.Add(b)
-                        MinPrice.Add(info.Data.Symbols(x).PriceFilter.MinPrice)
-                        VolumeMin.Add(info.Data.Symbols(x).LotSizeFilter.MinQuantity)
-                        TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SYMBOL : " & info.Data.Symbols(x).Name & "  |  Min Trade : " & info.Data.Symbols(x).LotSizeFilter.MinQuantity & " " & ASSET(a) & " |  Min Price : " & info.Data.Symbols(x).PriceFilter.MinPrice & " " & ASSET(b) & vbCrLf)
+        For p As Integer = 0 To My.Settings.period.Count - 1
+            For x As Integer = 0 To info.Data.Symbols.Count - 1
+                For a As Integer = 0 To ass
+                    For b As Integer = 0 To ass
+                        If ASSET(a) = info.Data.Symbols(x).BaseAsset And ASSET(b) = info.Data.Symbols(x).QuoteAsset Then
+                            SCAMBI.Add(info.Data.Symbols(x).Name)
+                            XComboBox2.Items.Add(info.Data.Symbols(x).Name)
+                            BaseASSET.Add(a)
+                            QuoteASSET.Add(b)
+                            Periodo.Add(My.Settings.period(p))
+                            MinPrice.Add(info.Data.Symbols(x).PriceFilter.MinPrice)
+                            VolumeMin.Add(info.Data.Symbols(x).LotSizeFilter.MinQuantity)
+                            TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SYMBOL : " & info.Data.Symbols(x).Name & " |  Period : " & My.Settings.period(p) & "  |  Min Trade : " & info.Data.Symbols(x).LotSizeFilter.MinQuantity & " " & ASSET(a) & " |  Min Price : " & info.Data.Symbols(x).PriceFilter.MinPrice & " " & ASSET(b) & vbCrLf)
+                            Exit For
+                        End If
+                    Next
+                Next
+                For n As Integer = 0 To ASSETDisp.Count
+                    If ASSETDisp(n) = info.Data.Symbols(x).BaseAsset Then
                         Exit For
+                    ElseIf n = ASSETDisp.Count - 1 Then
+                        ASSETDisp.Add(info.Data.Symbols(x).BaseAsset)
                     End If
                 Next
-            Next
-            For n As Integer = 0 To ASSETDisp.Count
-                If ASSETDisp(n) = info.Data.Symbols(x).BaseAsset Then
-                    Exit For
-                ElseIf n = ASSETDisp.Count - 1 Then
-                    ASSETDisp.Add(info.Data.Symbols(x).BaseAsset)
-                End If
-            Next
-            For n As Integer = 0 To ASSETDisp.Count
-                If ASSETDisp(n) = info.Data.Symbols(x).QuoteAsset Then
-                    Exit For
-                ElseIf n = ASSETDisp.Count - 1 Then
-                    ASSETDisp.Add(info.Data.Symbols(x).QuoteAsset)
-                End If
+                For n As Integer = 0 To ASSETDisp.Count
+                    If ASSETDisp(n) = info.Data.Symbols(x).QuoteAsset Then
+                        Exit For
+                    ElseIf n = ASSETDisp.Count - 1 Then
+                        ASSETDisp.Add(info.Data.Symbols(x).QuoteAsset)
+                    End If
+                Next
             Next
         Next
         Dim sl As Integer = SCAMBI.Count - 1
@@ -178,9 +194,9 @@ Public Class BOT
                 End If
                 Dim trade_stream As Threading.Tasks.Task(Of CryptoExchange.Net.Objects.WebCallResult(Of IEnumerable(Of BinanceKline)))
                 If last(n) = Nothing Then
-                    trade_stream = client.GetKlinesAsync(SCAMBI(n), Periodo)
+                    trade_stream = client.GetKlinesAsync(SCAMBI(n), Interval(Periodo(n)))
                 Else
-                    trade_stream = client.GetKlinesAsync(SCAMBI(n), Periodo, startTime:=last(n))
+                    trade_stream = client.GetKlinesAsync(SCAMBI(n), Interval(Periodo(n)), startTime:=last(n))
                     ChartX(n).Series("Data").Points.RemoveAt(ChartX(n).Series("Data").Points.Count - 1)
                 End If
                 If trade_stream.Result.Error Is Nothing Then
@@ -320,7 +336,7 @@ Public Class BOT
             ListView2.Columns.Add(ind(i), 100)
         Next
         For x As Integer = 0 To SCAMBI.Count - 1
-            ListView2.Items.Add(SCAMBI(x))
+            ListView2.Items.Add(SCAMBI(x) & " - " & Periodo(x))
             ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = price(x)
             ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = priceMax(x)
             ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = priceMin(x)

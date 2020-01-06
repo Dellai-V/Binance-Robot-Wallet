@@ -287,6 +287,7 @@ Partial Class Configuration
         Me.XComboBox1.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.XComboBox1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed
         Me.XComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.XComboBox1.Enabled = False
         Me.XComboBox1.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.XComboBox1.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.XComboBox1.FormattingEnabled = True

@@ -4,7 +4,7 @@
         TextBoxKey.Text = My.Settings.APIkey
         TextBoxSecret.Text = My.Settings.APIsecret
         XNumeric1.Value = My.Settings.UPtimer
-        XComboBox1.SelectedItem = My.Settings.period
+        '  XComboBox1.SelectedItem = My.Settings.period
         ListView1.Items.Clear()
         If BOT.stato = True Then
             For x As Integer = 0 To BOT.ASSET.Length - 1
@@ -27,7 +27,7 @@
         My.Settings.APIkey = TextBoxKey.Text
         My.Settings.APIsecret = TextBoxSecret.Text
         My.Settings.UPtimer = XNumeric1.Value
-        My.Settings.period = XComboBox1.SelectedItem
+        ' My.Settings.period = XComboBox1.SelectedItem
         My.Settings.Asset.Clear()
         My.Settings.Split.Clear()
         For x As Integer = 0 To ListView1.Items.Count - 1
