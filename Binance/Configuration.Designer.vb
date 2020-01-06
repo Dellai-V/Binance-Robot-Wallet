@@ -22,9 +22,9 @@ Partial Class Configuration
     'Non modificarla mediante l'editor del codice.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
-        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
-        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Me.XThemeContainer1 = New Binance.XThemeContainer()
         Me.XButton5 = New Binance.XButton()
         Me.XButton4 = New Binance.XButton()
@@ -39,7 +39,6 @@ Partial Class Configuration
         Me.ColumnHeader17 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader18 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.XButton1 = New Binance.XButton()
-        Me.XComboBox1 = New Binance.XComboBox()
         Me.XLabel6 = New Binance.XLabel()
         Me.XLabel5 = New Binance.XLabel()
         Me.XNumeric1 = New Binance.XNumeric()
@@ -47,6 +46,8 @@ Partial Class Configuration
         Me.XLabel3 = New Binance.XLabel()
         Me.TextBoxSecret = New Binance.XNormalTextBox()
         Me.TextBoxKey = New Binance.XNormalTextBox()
+        Me.XNormalTextBox2 = New Binance.XNormalTextBox()
+        Me.XLabel7 = New Binance.XLabel()
         Me.XThemeContainer1.SuspendLayout()
         CType(Me.Chart1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -60,6 +61,8 @@ Partial Class Configuration
         Me.XThemeContainer1.BaseColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.XThemeContainer1.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.XThemeContainer1.ContainerColour = System.Drawing.Color.FromArgb(CType(CType(54, Byte), Integer), CType(CType(54, Byte), Integer), CType(CType(54, Byte), Integer))
+        Me.XThemeContainer1.Controls.Add(Me.XLabel7)
+        Me.XThemeContainer1.Controls.Add(Me.XNormalTextBox2)
         Me.XThemeContainer1.Controls.Add(Me.XButton5)
         Me.XThemeContainer1.Controls.Add(Me.XButton4)
         Me.XThemeContainer1.Controls.Add(Me.Chart1)
@@ -71,7 +74,6 @@ Partial Class Configuration
         Me.XThemeContainer1.Controls.Add(Me.XNormalTextBox1)
         Me.XThemeContainer1.Controls.Add(Me.ListView1)
         Me.XThemeContainer1.Controls.Add(Me.XButton1)
-        Me.XThemeContainer1.Controls.Add(Me.XComboBox1)
         Me.XThemeContainer1.Controls.Add(Me.XLabel6)
         Me.XThemeContainer1.Controls.Add(Me.XLabel5)
         Me.XThemeContainer1.Controls.Add(Me.XNumeric1)
@@ -126,24 +128,24 @@ Partial Class Configuration
         '
         Me.Chart1.BackColor = System.Drawing.Color.Transparent
         Me.Chart1.BorderlineColor = System.Drawing.Color.Transparent
-        ChartArea1.BackColor = System.Drawing.Color.Transparent
-        ChartArea1.BackImageTransparentColor = System.Drawing.Color.Transparent
-        ChartArea1.BackSecondaryColor = System.Drawing.Color.Transparent
-        ChartArea1.BorderColor = System.Drawing.Color.Transparent
-        ChartArea1.Name = "ChartArea1"
-        Me.Chart1.ChartAreas.Add(ChartArea1)
-        Legend1.BackColor = System.Drawing.Color.Transparent
-        Legend1.ForeColor = System.Drawing.Color.Gainsboro
-        Legend1.Name = "Legend1"
-        Me.Chart1.Legends.Add(Legend1)
+        ChartArea2.BackColor = System.Drawing.Color.Transparent
+        ChartArea2.BackImageTransparentColor = System.Drawing.Color.Transparent
+        ChartArea2.BackSecondaryColor = System.Drawing.Color.Transparent
+        ChartArea2.BorderColor = System.Drawing.Color.Transparent
+        ChartArea2.Name = "ChartArea1"
+        Me.Chart1.ChartAreas.Add(ChartArea2)
+        Legend2.BackColor = System.Drawing.Color.Transparent
+        Legend2.ForeColor = System.Drawing.Color.Gainsboro
+        Legend2.Name = "Legend1"
+        Me.Chart1.Legends.Add(Legend2)
         Me.Chart1.Location = New System.Drawing.Point(369, 235)
         Me.Chart1.Name = "Chart1"
         Me.Chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel
-        Series1.ChartArea = "ChartArea1"
-        Series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut
-        Series1.Legend = "Legend1"
-        Series1.Name = "Asset"
-        Me.Chart1.Series.Add(Series1)
+        Series2.ChartArea = "ChartArea1"
+        Series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut
+        Series2.Legend = "Legend1"
+        Series2.Name = "Asset"
+        Me.Chart1.Series.Add(Series2)
         Me.Chart1.Size = New System.Drawing.Size(285, 218)
         Me.Chart1.TabIndex = 128
         Me.Chart1.Text = "Chart1"
@@ -279,28 +281,6 @@ Partial Class Configuration
         Me.XButton1.TabIndex = 109
         Me.XButton1.Text = "Save"
         '
-        'XComboBox1
-        '
-        Me.XComboBox1.ArrowColour = System.Drawing.Color.FromArgb(CType(CType(30, Byte), Integer), CType(CType(30, Byte), Integer), CType(CType(30, Byte), Integer))
-        Me.XComboBox1.BackColor = System.Drawing.Color.Transparent
-        Me.XComboBox1.BaseColour = System.Drawing.Color.FromArgb(CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer))
-        Me.XComboBox1.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
-        Me.XComboBox1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed
-        Me.XComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.XComboBox1.Enabled = False
-        Me.XComboBox1.Font = New System.Drawing.Font("Segoe UI", 10.0!)
-        Me.XComboBox1.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.XComboBox1.FormattingEnabled = True
-        Me.XComboBox1.Items.AddRange(New Object() {"1W", "3D", "1D", "12h", "8h", "6h", "4h", "2h", "1h", "30m"})
-        Me.XComboBox1.LineColour = System.Drawing.Color.FromArgb(CType(CType(111, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(21, Byte), Integer))
-        Me.XComboBox1.Location = New System.Drawing.Point(737, 131)
-        Me.XComboBox1.Name = "XComboBox1"
-        Me.XComboBox1.Size = New System.Drawing.Size(75, 26)
-        Me.XComboBox1.SqaureColour = System.Drawing.Color.FromArgb(CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer))
-        Me.XComboBox1.SqaureHoverColour = System.Drawing.Color.FromArgb(CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer), CType(CType(52, Byte), Integer))
-        Me.XComboBox1.StartIndex = 2
-        Me.XComboBox1.TabIndex = 108
-        '
         'XLabel6
         '
         Me.XLabel6.AutoSize = True
@@ -308,7 +288,7 @@ Partial Class Configuration
         Me.XLabel6.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.XLabel6.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.XLabel6.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.XLabel6.Location = New System.Drawing.Point(647, 138)
+        Me.XLabel6.Location = New System.Drawing.Point(535, 156)
         Me.XLabel6.Name = "XLabel6"
         Me.XLabel6.Size = New System.Drawing.Size(84, 15)
         Me.XLabel6.TabIndex = 107
@@ -321,7 +301,7 @@ Partial Class Configuration
         Me.XLabel5.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.XLabel5.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.XLabel5.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.XLabel5.Location = New System.Drawing.Point(452, 138)
+        Me.XLabel5.Location = New System.Drawing.Point(345, 154)
         Me.XLabel5.Name = "XLabel5"
         Me.XLabel5.Size = New System.Drawing.Size(80, 15)
         Me.XLabel5.TabIndex = 106
@@ -334,7 +314,7 @@ Partial Class Configuration
         Me.XNumeric1.ButtonColour = System.Drawing.Color.FromArgb(CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer), CType(CType(47, Byte), Integer))
         Me.XNumeric1.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.XNumeric1.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.XNumeric1.Location = New System.Drawing.Point(538, 131)
+        Me.XNumeric1.Location = New System.Drawing.Point(431, 147)
         Me.XNumeric1.Maximum = CType(30, Long)
         Me.XNumeric1.Minimum = CType(1, Long)
         Me.XNumeric1.Name = "XNumeric1"
@@ -404,6 +384,37 @@ Partial Class Configuration
         Me.TextBoxKey.TextColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
         Me.TextBoxKey.UseSystemPasswordChar = False
         '
+        'XNormalTextBox2
+        '
+        Me.XNormalTextBox2.BackColor = System.Drawing.Color.Transparent
+        Me.XNormalTextBox2.BackgroundColour = System.Drawing.Color.FromArgb(CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer), CType(CType(42, Byte), Integer))
+        Me.XNormalTextBox2.BorderColour = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
+        Me.XNormalTextBox2.Location = New System.Drawing.Point(625, 142)
+        Me.XNormalTextBox2.MaxLength = 32767
+        Me.XNormalTextBox2.Multiline = False
+        Me.XNormalTextBox2.Name = "XNormalTextBox2"
+        Me.XNormalTextBox2.ReadOnly = False
+        Me.XNormalTextBox2.Size = New System.Drawing.Size(187, 29)
+        Me.XNormalTextBox2.Style = Binance.XNormalTextBox.Styles.NotRounded
+        Me.XNormalTextBox2.TabIndex = 131
+        Me.XNormalTextBox2.Text = "3D, 1D"
+        Me.XNormalTextBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Left
+        Me.XNormalTextBox2.TextColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.XNormalTextBox2.UseSystemPasswordChar = False
+        '
+        'XLabel7
+        '
+        Me.XLabel7.AutoSize = True
+        Me.XLabel7.BackColor = System.Drawing.Color.Transparent
+        Me.XLabel7.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.XLabel7.FontColour = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.XLabel7.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.XLabel7.Location = New System.Drawing.Point(622, 174)
+        Me.XLabel7.Name = "XLabel7"
+        Me.XLabel7.Size = New System.Drawing.Size(106, 15)
+        Me.XLabel7.TabIndex = 132
+        Me.XLabel7.Text = "es. : 3D, 1D, 5m, 1h"
+        '
         'Configuration
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -431,7 +442,6 @@ Partial Class Configuration
     Friend WithEvents TextBoxSecret As XNormalTextBox
     Friend WithEvents TextBoxKey As XNormalTextBox
     Friend WithEvents XButton1 As XButton
-    Friend WithEvents XComboBox1 As XComboBox
     Friend WithEvents ListView1 As ListView
     Friend WithEvents ColumnHeader17 As ColumnHeader
     Friend WithEvents ColumnHeader18 As ColumnHeader
@@ -444,4 +454,6 @@ Partial Class Configuration
     Friend WithEvents Chart1 As DataVisualization.Charting.Chart
     Friend WithEvents XButton5 As XButton
     Friend WithEvents XButton4 As XButton
+    Friend WithEvents XNormalTextBox2 As XNormalTextBox
+    Friend WithEvents XLabel7 As XLabel
 End Class

@@ -4,7 +4,13 @@
         TextBoxKey.Text = My.Settings.APIkey
         TextBoxSecret.Text = My.Settings.APIsecret
         XNumeric1.Value = My.Settings.UPtimer
-        '  XComboBox1.SelectedItem = My.Settings.period
+        For x As Integer = 0 To My.Settings.period.Count - 1
+            If x = 0 Then
+                XNormalTextBox2.Text = My.Settings.period(x)
+            Else
+                XNormalTextBox2.Text = XNormalTextBox2.Text & ", " & My.Settings.period(x)
+            End If
+        Next
         ListView1.Items.Clear()
         If BOT.stato = True Then
             For x As Integer = 0 To BOT.ASSET.Length - 1
@@ -27,12 +33,16 @@
         My.Settings.APIkey = TextBoxKey.Text
         My.Settings.APIsecret = TextBoxSecret.Text
         My.Settings.UPtimer = XNumeric1.Value
-        ' My.Settings.period = XComboBox1.SelectedItem
+        My.Settings.period.Clear()
         My.Settings.Asset.Clear()
         My.Settings.Split.Clear()
         For x As Integer = 0 To ListView1.Items.Count - 1
             My.Settings.Asset.Add(ListView1.Items(x).Text)
             My.Settings.Split.Add(ListView1.Items(x).SubItems(1).Text)
+        Next
+        Dim cut() As String = XNormalTextBox2.Text.Split(", ")
+        For x As Integer = 0 To cut.Length - 1
+            My.Settings.period.Add(cut(x))
         Next
         BOT.LoadConfig()
         Me.Close()

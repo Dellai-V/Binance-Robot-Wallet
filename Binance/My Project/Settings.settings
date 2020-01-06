@@ -14,8 +14,10 @@
     <Setting Name="period" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;1W&lt;/string&gt;
   &lt;string&gt;3D&lt;/string&gt;
   &lt;string&gt;1D&lt;/string&gt;
+  &lt;string&gt;12h&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="Asset" Type="System.Collections.Specialized.StringCollection" Scope="User">
@@ -23,6 +25,9 @@
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;string&gt;BTC&lt;/string&gt;
   &lt;string&gt;ETH&lt;/string&gt;
+  &lt;string&gt;EOS&lt;/string&gt;
+  &lt;string&gt;USDT&lt;/string&gt;
+  &lt;string&gt;BNB&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="Split" Type="System.Collections.Specialized.StringCollection" Scope="User">

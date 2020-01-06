@@ -683,7 +683,6 @@ Public Class BOT
                 Else
                     LBuy(n)
                 End If
-
                 If priority(BaseASSET(n)) = 0 Or priority(QuoteASSET(n)) = top Then
                     If indicator(n, "EMA10") < price(n) Then
                         MSell(n)
@@ -696,12 +695,34 @@ Public Class BOT
             Next
         End If
     End Sub
+    Private Function BuyMed(ByRef s As Integer) As Decimal
+        Dim c As Integer = 0
+        Dim p As Decimal = 0
+        For x As Integer = 0 To SCAMBI.Count - 1
+            If SCAMBI(x) = SCAMBI(s) Then
+                c += 1
+                p += priceMin(x)
+            End If
+        Next
+        Return Mdecimal(p / c, MinPrice(s))
+    End Function
+    Private Function SellMed(ByRef s As Integer) As Decimal
+        Dim c As Integer = 0
+        Dim p As Decimal = 0
+        For x As Integer = 0 To SCAMBI.Count - 1
+            If SCAMBI(x) = SCAMBI(s) Then
+                c += 1
+                p += priceMax(x)
+            End If
+        Next
+        Return Mdecimal(p / c, MinPrice(s))
+    End Function
     Private Sub LSell(ByVal n As Integer)
         Dim Volume As Decimal = BILANCIOdisp(BaseASSET(n)) - BILANCIOideale(BaseASSET(n))
         For x = 1 To 10
             If Volume / x > 0.005 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n))) + ((Volume / x) * priceMax(n)) <= BILANCIOideale(QuoteASSET(n)) Then
                 Try
-                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Limit, Mdecimal(Volume / x, n), price:=priceMax(n), timeInForce:=TimeInForce.GoodTillCancel)
+                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Limit, Mdecimal(Volume / x, VolumeMin(n)), price:=SellMed(n), timeInForce:=TimeInForce.GoodTillCancel)
                     TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
                     VerificaBilancio()
                     Exit For
@@ -718,7 +739,7 @@ Public Class BOT
         For x = 1 To 10
             If Volume / x > 0.005 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(BaseASSET(n)) + BILANCIOordini(BaseASSET(n))) + (Volume / x) <= BILANCIOideale(BaseASSET(n)) Then
                 Try
-                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Limit, Mdecimal(Volume / x, n), price:=priceMin(n), timeInForce:=TimeInForce.GoodTillCancel)
+                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Limit, Mdecimal(Volume / x, VolumeMin(n)), price:=BuyMed(n), timeInForce:=TimeInForce.GoodTillCancel)
                     TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
                     VerificaBilancio()
                     Exit For
@@ -735,7 +756,7 @@ Public Class BOT
         For x = 1 To 10
             If Volume / x > 0.1 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n))) + ((Volume / x) * priceMax(n)) <= BILANCIOideale(QuoteASSET(n)) Then
                 Try
-                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Market, Mdecimal(Volume / x, n))
+                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Market, Mdecimal(Volume / x, VolumeMin(n)))
                     TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & price(n) & " ID : " & ordine.Data.OrderId & vbCrLf)
                     VerificaBilancio()
                     Exit For
@@ -752,7 +773,7 @@ Public Class BOT
         For x = 1 To 10
             If Volume / x > 0.1 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(BaseASSET(n)) + BILANCIOordini(BaseASSET(n))) + (Volume / x) <= BILANCIOideale(BaseASSET(n)) Then
                 Try
-                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Market, Mdecimal(Volume / x, n))
+                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Market, Mdecimal(Volume / x, VolumeMin(n)))
                     TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & price(n) & " ID : " & ordine.Data.OrderId & vbCrLf)
                     VerificaBilancio()
                     Exit For
@@ -764,9 +785,8 @@ Public Class BOT
             End If
         Next
     End Sub
-    Private Function Mdecimal(ByVal vol As Decimal, ByVal n As Integer) As Decimal
+    Private Function Mdecimal(ByVal vol As Decimal, ByVal v As Decimal) As Decimal
         Dim dec As Integer = 0
-        Dim v As Decimal = VolumeMin(n)
         Dim i As Decimal = 0.5
         For x As Integer = 0 To 100
             If Not v < 1 Then
@@ -832,7 +852,7 @@ Public Class BOT
     Private Sub XButton2_Click(sender As Object, e As EventArgs) Handles XButton2.Click
         If XComboBox1.SelectedItem = "BUY" And XComboBox3.SelectedItem = "LIMIT" Then
             Try
-                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Buy, OrderType.Limit, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), XComboBox2.SelectedIndex), price:=XNormalTextBox1.Text, timeInForce:=TimeInForce.GoodTillCancel)
+                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Buy, OrderType.Limit, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), VolumeMin(XComboBox2.SelectedIndex)), price:=XNormalTextBox1.Text, timeInForce:=TimeInForce.GoodTillCancel)
                 TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
                 VerificaBilancio()
             Catch ex As Exception
@@ -840,7 +860,7 @@ Public Class BOT
             End Try
         ElseIf XComboBox1.SelectedItem = "BUY" And XComboBox3.SelectedItem = "MARKET" Then
             Try
-                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Buy, OrderType.Market, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), XComboBox2.SelectedIndex))
+                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Buy, OrderType.Market, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), VolumeMin(XComboBox2.SelectedIndex)))
                 TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & price(XComboBox2.SelectedIndex) & " ID : " & ordine.Data.OrderId & vbCrLf)
                 VerificaBilancio()
             Catch ex As Exception
@@ -848,7 +868,7 @@ Public Class BOT
             End Try
         ElseIf XComboBox1.SelectedItem = "SELL" And XComboBox3.SelectedItem = "LIMIT" Then
             Try
-                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Sell, OrderType.Limit, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), XComboBox2.SelectedIndex), price:=XNormalTextBox1.Text, timeInForce:=TimeInForce.GoodTillCancel)
+                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Sell, OrderType.Limit, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), VolumeMin(XComboBox2.SelectedIndex)), price:=XNormalTextBox1.Text, timeInForce:=TimeInForce.GoodTillCancel)
                 TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
                 VerificaBilancio()
             Catch ex As Exception
@@ -856,7 +876,7 @@ Public Class BOT
             End Try
         ElseIf XComboBox1.SelectedItem = "SELL" And XComboBox3.SelectedItem = "MARKET" Then
             Try
-                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Sell, OrderType.Market, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), XComboBox2.SelectedIndex))
+                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Sell, OrderType.Market, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), VolumeMin(XComboBox2.SelectedIndex)))
                 TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & price(XComboBox2.SelectedIndex) & " ID : " & ordine.Data.OrderId & vbCrLf)
                 VerificaBilancio()
             Catch ex As Exception
