@@ -167,6 +167,7 @@ Public Class BOT
         makeChart()
         OHLC()
         VerificaBilancio()
+        VerificaPosizioniAperte()
         VerificaMigliorePeggiore()
         MakeListView()
         UpdateListView()
@@ -387,7 +388,6 @@ Public Class BOT
                 Next
             Next
             CalcoloBTC()
-            Chartinfo()
             ChartBTCtot()
             XLabel1.Text = "Tot : " & Math.Round(BTCtot, 6) & " " & ASSET(0)
             Dim USDtot As Decimal = 0
@@ -402,7 +402,6 @@ Public Class BOT
         Catch ex As Exception
             TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR Balances : " & ex.Message & vbCrLf)
         End Try
-        VerificaPosizioniAperte()
     End Sub
     Private Sub CalcoloBTC()
         ToBTC(0) = 1 'Valore base 
@@ -507,7 +506,7 @@ Public Class BOT
                 If ordini.Data(x).Side = 0 Then
                     ListView4.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = "BUY"
                     ListView4.Items(x).ForeColor = Color.DarkSeaGreen
-                    For n As Integer = 0 To SCAMBI.Count - 1
+                    For n As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
                         If ordini.Data(x).Symbol = SCAMBI(n) Then
                             If BILANCIOdisp(BaseASSET(n)) + BILANCIOordini(BaseASSET(n)) > BILANCIOideale(BaseASSET(n)) And CheckBox1.Checked = True Then
                                 client.CancelOrder(ordini.Data(x).Symbol, ordini.Data(x).OrderId)
@@ -520,7 +519,7 @@ Public Class BOT
                 Else
                     ListView4.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = "SELL"
                     ListView4.Items(x).ForeColor = Color.Salmon
-                    For n As Integer = 0 To SCAMBI.Count - 1
+                    For n As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
                         If ordini.Data(x).Symbol = SCAMBI(n) Then
                             If BILANCIOdisp(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n)) > BILANCIOideale(QuoteASSET(n)) And CheckBox1.Checked = True Then
                                 client.CancelOrder(ordini.Data(x).Symbol, ordini.Data(x).OrderId)
@@ -804,8 +803,10 @@ Public Class BOT
         If stato = True Then
             OHLC()
             VerificaBilancio()
+            VerificaPosizioniAperte()
             VerificaMigliorePeggiore()
             UpdateListView()
+            Chartinfo()
         End If
         Timer1.Start()
     End Sub
