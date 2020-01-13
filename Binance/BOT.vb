@@ -167,7 +167,6 @@ Public Class BOT
         makeChart()
         OHLC()
         VerificaBilancio()
-        VerificaPosizioniAperte()
         VerificaMigliorePeggiore()
         MakeListView()
         UpdateListView()
@@ -388,10 +387,9 @@ Public Class BOT
                 Next
             Next
             CalcoloBTC()
-            ChartBTCtot()
             XLabel1.Text = "Tot : " & Math.Round(BTCtot, 6) & " " & ASSET(0)
             Dim USDtot As Decimal = 0
-            For a As Integer = 0 To SCAMBI.Count - 1
+            For a As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
                 If BaseASSET(a) = 0 Then
                     If ASSET(QuoteASSET(a)) = "USDT" Or ASSET(QuoteASSET(a)) = "BUSD" Or ASSET(QuoteASSET(a)) = "PAX" Or ASSET(QuoteASSET(a)) = "TUSD" Or ASSET(QuoteASSET(a)) = "USDC" Then
                         USDtot = BTCtot * price(a)
@@ -402,6 +400,9 @@ Public Class BOT
         Catch ex As Exception
             TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR Balances : " & ex.Message & vbCrLf)
         End Try
+        Chartinfo()
+        ChartBTCtot()
+        VerificaPosizioniAperte()
     End Sub
     Private Sub CalcoloBTC()
         ToBTC(0) = 1 'Valore base 
@@ -657,6 +658,7 @@ Public Class BOT
             End If
         Next
         Dim top As Integer = 0
+        Dim low As Integer = 0
         For n As Integer = 0 To priority.Length - 1
             If m(n) = Nothing Then
                 priority(n) = 0
@@ -666,15 +668,20 @@ Public Class BOT
             prioTot += priority(n)
             If priority(n) > top Then
                 top = priority(n)
+                XLabel7.Text = "BUY : " & ASSET(n)
+            End If
+            If priority(n) < low Or n = 0 Then
+                low = priority(n)
+                XLabel9.Text = "SELL : " & ASSET(n)
             End If
         Next
         For n As Integer = 0 To ASSET.Length - 1
             BILANCIOideale(n) = Math.Round(((BTCtot / prioTot) * priority(n)) / ToBTC(n), 8)
         Next
         If CheckBox1.Checked = True Then
-            For n As Integer = 0 To SCAMBI.Count - 1
+            For n As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
                 If priority(BaseASSET(n)) = top Or priority(QuoteASSET(n)) = 0 Then
-                    If indicator(n, "EMA10") > price(n) Then
+                    If indMed(n, "EMA10") > price(n) Then
                         MBuy(n)
                     Else
                         LBuy(n)
@@ -683,7 +690,7 @@ Public Class BOT
                     LBuy(n)
                 End If
                 If priority(BaseASSET(n)) = 0 Or priority(QuoteASSET(n)) = top Then
-                    If indicator(n, "EMA10") < price(n) Then
+                    If indMed(n, "EMA10") < price(n) Then
                         MSell(n)
                     Else
                         LSell(n)
@@ -694,6 +701,17 @@ Public Class BOT
             Next
         End If
     End Sub
+    Private Function indMed(ByRef s As Integer, ByRef i As String) As Decimal
+        Dim c As Integer = 0
+        Dim p As Decimal = 0
+        For x As Integer = 0 To SCAMBI.Count - 1
+            If SCAMBI(x) = SCAMBI(s) Then
+                c += 1
+                p += indicator(s, i)
+            End If
+        Next
+        Return Mdecimal(p / c, MinPrice(s))
+    End Function
     Private Function BuyMed(ByRef s As Integer) As Decimal
         Dim c As Integer = 0
         Dim p As Decimal = 0
@@ -787,7 +805,7 @@ Public Class BOT
     Private Function Mdecimal(ByVal vol As Decimal, ByVal v As Decimal) As Decimal
         Dim dec As Integer = 0
         Dim i As Decimal = 0.5
-        For x As Integer = 0 To 100
+        For x As Integer = 0 To 8
             If Not v < 1 Then
                 Exit For
             Else
@@ -803,10 +821,8 @@ Public Class BOT
         If stato = True Then
             OHLC()
             VerificaBilancio()
-            VerificaPosizioniAperte()
             VerificaMigliorePeggiore()
             UpdateListView()
-            Chartinfo()
         End If
         Timer1.Start()
     End Sub
