@@ -652,6 +652,7 @@ Public Class BOT
             End If
             If indicator(n, "WMA") < price(n) And indicator(n, "WMA") <> Nothing Then
                 priority(BaseASSET(n)) += 1
+<<<<<<< HEAD
             ElseIf indicator(n, "WMA") <> Nothing Then
                 priority(QuoteASSET(n)) += 1
             End If
@@ -732,6 +733,88 @@ Public Class BOT
                 priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "WMA") <> Nothing Then
                 priority(QuoteASSET(n)) += 1
+=======
+            ElseIf indicator(n, "WMA") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+
+            '####
+
+            If indicator(n, "EMA5") < indicator(n, "EMA5", 1) And indicator(n, "EMA5") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "EMA5") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "EMA10") < indicator(n, "EMA10", 1) And indicator(n, "EMA10") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "EMA10") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "EMA20") < indicator(n, "EMA20", 1) And indicator(n, "EMA20") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "EMA20") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "EMA30") < indicator(n, "EMA30", 1) And indicator(n, "EMA30") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "EMA30") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "EMA50") < indicator(n, "EMA50", 1) And indicator(n, "EMA50") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "EMA50") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "EMA100") < indicator(n, "EMA100", 1) And indicator(n, "EMA100") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "EMA100") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "EMA200") < indicator(n, "EMA200", 1) And indicator(n, "EMA200") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "EMA200") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "SMA5") < indicator(n, "SMA5", 1) And indicator(n, "SMA5") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "SMA5") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "SMA10") < indicator(n, "SMA10", 1) And indicator(n, "SMA10") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "SMA10") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "SMA20") < indicator(n, "SMA20", 1) And indicator(n, "SMA20") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "SMA20") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "SMA30") < indicator(n, "SMA30", 1) And indicator(n, "SMA30") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "SMA30") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "SMA50") < indicator(n, "SMA50", 1) And indicator(n, "SMA50") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "SMA50") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "SMA100") < indicator(n, "SMA100", 1) And indicator(n, "SMA100") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "SMA100") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "SMA200") < indicator(n, "SMA200", 1) And indicator(n, "SMA200") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "SMA200") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+            End If
+            If indicator(n, "WMA") < indicator(n, "WMA", 1) And indicator(n, "WMA") <> Nothing Then
+                priority(BaseASSET(n)) += 1
+            ElseIf indicator(n, "WMA") <> Nothing Then
+                priority(QuoteASSET(n)) += 1
+>>>>>>> 79a8230ffda1ce7907727efd3d829d6748f0ae3e
             End If
         Next
         Dim m() As Integer
@@ -767,13 +850,19 @@ Public Class BOT
         If CheckBox1.Checked = True Then
             For n As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
                 If priority(BaseASSET(n)) = top And priority(QuoteASSET(n)) = low Then
+<<<<<<< HEAD
                     CancellaOrdini(SCAMBI(n))
+=======
+>>>>>>> 79a8230ffda1ce7907727efd3d829d6748f0ae3e
                     MBuy(n)
                 Else
                     LBuy(n)
                 End If
                 If priority(BaseASSET(n)) = low And priority(QuoteASSET(n)) = top Then
+<<<<<<< HEAD
                     CancellaOrdini(SCAMBI(n))
+=======
+>>>>>>> 79a8230ffda1ce7907727efd3d829d6748f0ae3e
                     MSell(n)
                 Else
                     LSell(n)
