@@ -41,7 +41,7 @@
             Chart1.Series(0).Points(n).LegendText = assetTEMP(n)
         Next
     End Sub
-    Private Sub ListView1_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub ListView1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView1.SelectedIndexChanged
         If ListView1.SelectedItems.Count = 1 Then
             TextBoxAsset.Text = ListView1.SelectedItems(0).Text
             Numeric2.Value = ListView1.SelectedItems(0).SubItems(1).Text
