@@ -555,15 +555,16 @@ Public Class BOT
         End Try
     End Sub
     Dim priority() As Integer
+    Dim topC() As Integer
     Private Sub VerificaMigliorePeggiore()
         Dim prioTot As Integer = 0
         priority = Nothing
         ReDim priority(ASSET.Length - 1)
         For n As Integer = 0 To SCAMBI.Count - 1
             If indicator(n, "CCI") > 200 And indicator(n, "CCI") < indicator(n, "CCI", 1) And indicator(n, "CCI") <> Nothing Then
-                priority(QuoteASSET(n)) +=  3
+                priority(QuoteASSET(n)) += 3
             ElseIf indicator(n, "CCI") < -200 And indicator(n, "CCI") > indicator(n, "CCI", 1) And Not indicator(n, "CCI") <> Nothing Then
-                priority(BaseASSET(n)) +=  3
+                priority(BaseASSET(n)) += 3
             End If
             If indicator(n, "RSI") > 80 And indicator(n, "RSI") <> Nothing Then
                 priority(QuoteASSET(n)) += 3
@@ -657,7 +658,6 @@ Public Class BOT
             End If
 
             '####
-
             If indicator(n, "EMA5") < indicator(n, "EMA5", 1) And indicator(n, "EMA5") <> Nothing Then
                 priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "EMA5") <> Nothing Then
@@ -734,52 +734,82 @@ Public Class BOT
                 priority(QuoteASSET(n)) += 1
             End If
         Next
-        Dim m() As Integer
-        ReDim m(priority.Length - 1)
-        For n As Integer = 0 To SCAMBI.Count - 1
-            If priority(BaseASSET(n)) > priority(QuoteASSET(n)) Then
-                m(BaseASSET(n)) += 1
-            Else
-                m(QuoteASSET(n)) += 1
+
+        PriorityTop()
+        Dim q As Integer = 0 'numero di cripto 
+        For n As Integer = q + 1 To topC.Length - 1
+            If Not priority(topC(n)) = priority(topC(q)) Then
+                priority(topC(n)) = 0
             End If
         Next
-        Dim top As Integer = 0
-        Dim low As Integer = 0
-        For n As Integer = 0 To priority.Length - 1
-            If m(n) = Nothing Then
-                priority(n) = 0
-            Else
-                priority(n) = m(n) * priority(n) * ASSETSplit(n) * priority(n)
-            End If
+        For n As Integer = 0 To topC.Length - 1
+            priority(n) = priority(n) * ASSETSplit(n) * priority(n)
+        Next
+        For n As Integer = 0 To ASSET.Length - 1
             prioTot += priority(n)
-            If priority(n) > top Then
-                top = priority(n)
-                LabelBUY.Text = "BUY : " & ASSET(n)
-            End If
-            If priority(n) < low Or n = 0 Then
-                low = priority(n)
-                LabelSELL.Text = "SELL : " & ASSET(n)
-            End If
         Next
         For n As Integer = 0 To ASSET.Length - 1
             BILANCIOideale(n) = Math.Round(((BTCtot / prioTot) * priority(n)) / ToBTC(n), 8)
         Next
         If CheckBox1.Checked = True Then
-            For n As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
-                If priority(BaseASSET(n)) = top And priority(QuoteASSET(n)) = low Then
-                    CancellaOrdini(SCAMBI(n))
-                    MBuy(n)
-                Else
-                    LBuy(n)
-                End If
-                If priority(BaseASSET(n)) = low And priority(QuoteASSET(n)) = top Then
-                    CancellaOrdini(SCAMBI(n))
-                    MSell(n)
-                Else
-                    LSell(n)
-                End If
+            For h As Integer = 0 To topC.Length - 2
+                For l As Integer = 1 To topC.Length - 1
+                    For n As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
+                        If BaseASSET(n) = topC(h) And QuoteASSET(n) = topC(topC.Length - l) And topC.Length - l > h Then
+                            If priority(QuoteASSET(n)) = 0 And BILANCIO(BaseASSET(n)) < (BILANCIOideale(BaseASSET(n)) / 1.1) And QuoteASSET(n) <> topC(h + 1) Then
+                                CancellaOrdini(SCAMBI(n))
+                                MBuy(n)
+                                '  LBuy1(n)
+                            Else
+                                LBuy(n)
+                            End If
+                        End If
+                        If QuoteASSET(n) = topC(h) And BaseASSET(n) = topC(topC.Length - l) And topC.Length - l > h Then
+                            If priority(BaseASSET(n)) = 0 And BILANCIO(QuoteASSET(n)) < (BILANCIOideale(QuoteASSET(n)) / 1.1) And BaseASSET(n) <> topC(h + 1) Then
+                                CancellaOrdini(SCAMBI(n))
+                                MSell(n)
+                                ' LSell1(n)
+                            Else
+                                LSell(n)
+                            End If
+                        End If
+                    Next
+                Next
             Next
         End If
+    End Sub
+    Private Sub PriorityTop()
+        Dim l As Integer = priority.Length - 1
+        ReDim topC(l)
+        For p As Integer = 0 To l
+            If priority(p) > priority(topC(0)) Then
+                topC(0) = p
+            End If
+        Next
+        For p As Integer = 1 To l
+            If priority(p) < priority(topC(1)) Then
+                For t As Integer = 1 To l
+                    topC(t) = p
+                Next
+            End If
+        Next
+        For t As Integer = 1 To l
+            For p As Integer = 0 To l
+                If priority(p) <= priority(topC(t - 1)) And priority(p) >= priority(topC(t)) Then
+                    Dim ex As Boolean = False
+                    For tx As Integer = 0 To l
+                        If topC(tx) = p Then
+                            ex = True
+                        End If
+                    Next
+                    If ex = False Then
+                        topC(t) = p
+                    End If
+                End If
+            Next
+        Next
+        LabelSELL.Text = "SELL : " & ASSET(topC(topC.Length - 1))
+        LabelBUY.Text = "BUY : " & ASSET(topC(0))
     End Sub
     Private Function indMed(ByRef s As Integer, ByRef i As String) As Decimal
         Dim c As Integer = 0
@@ -817,11 +847,26 @@ Public Class BOT
     Private Sub LSell(ByVal n As Integer)
         Dim Volume As Decimal = Math.Round(BILANCIOdisp(BaseASSET(n)) - BILANCIOideale(BaseASSET(n)), 8)
         For x = 1 To 10
+            If Volume / x > 0.005 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n))) + ((Volume / x) * SellMed(n)) <= BILANCIOideale(QuoteASSET(n)) Then
+                Try
+                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Limit, Mdecimal((Volume / x), VolumeMin(n)), price:=SellMed(n), timeInForce:=TimeInForce.GoodTillCancel)
+                    TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
+                    VerificaBilancio()
+                    Exit For
+                Catch ex As Exception
+                    TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR SELL : " & SCAMBI(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message & vbCrLf)
+                End Try
+            ElseIf Volume / x < 0.005 / ToBTC(BaseASSET(n)) Then
+                Exit For
+            End If
+        Next
+    End Sub
+    Private Sub LSell1(ByVal n As Integer)
+        Dim Volume As Decimal = Math.Round(BILANCIOdisp(BaseASSET(n)) - BILANCIOideale(BaseASSET(n)), 8)
+        For x = 1 To 10
             If Volume / x > 0.005 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n))) + ((Volume / x) * priceMax(n)) <= BILANCIOideale(QuoteASSET(n)) Then
                 Try
-                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Limit, Mdecimal((Volume / x) / 2, VolumeMin(n)), price:=SellMed(n), timeInForce:=TimeInForce.GoodTillCancel)
-                    TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
-                     Dim ordine2 = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Limit, Mdecimal((Volume / x) / 2, VolumeMin(n)), price:=Mdecimal(price(n) + (price(n)/80), MinPrice(n)), timeInForce:=TimeInForce.GoodTillCancel)
+                    Dim ordine2 = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Limit, Mdecimal((Volume / x), VolumeMin(n)), price:=Mdecimal(price(n) + (price(n) / 80), MinPrice(n)), timeInForce:=TimeInForce.GoodTillCancel)
                     TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Limit : " & ordine2.Data.Symbol & " Volume : " & ordine2.Data.OriginalQuantity & " Price : " & ordine2.Data.Price & " ID : " & ordine2.Data.OrderId & vbCrLf)
                     VerificaBilancio()
                     Exit For
@@ -834,14 +879,29 @@ Public Class BOT
         Next
     End Sub
     Private Sub LBuy(ByVal n As Integer)
-        Dim Volume As Decimal = Math.Round((BILANCIOdisp(QuoteASSET(n)) - BILANCIOideale(QuoteASSET(n))) / (priceMin(n) * 2), 8)
+        Dim Volume As Decimal = Math.Round((BILANCIOdisp(QuoteASSET(n)) - BILANCIOideale(QuoteASSET(n))) / (priceMin(n)), 8)
         For x = 1 To 10
             If Volume / x > 0.005 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(BaseASSET(n)) + BILANCIOordini(BaseASSET(n))) + (Volume / x) <= BILANCIOideale(BaseASSET(n)) Then
                 Try
-                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Limit, Mdecimal((Volume / x) / 2, VolumeMin(n)), price:=BuyMed(n), timeInForce:=TimeInForce.GoodTillCancel)
+                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Limit, Mdecimal((Volume / x), VolumeMin(n)), price:=BuyMed(n), timeInForce:=TimeInForce.GoodTillCancel)
                     TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
-                    Dim ordine2 = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Limit, Mdecimal((Volume / x) / 2, VolumeMin(n)), price:=Mdecimal(price(n) - (price(n)/80), MinPrice(n)), timeInForce:=TimeInForce.GoodTillCancel)
-                    TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Limit : " & ordine2.Data.Symbol & " Volume : " & ordine2.Data.OriginalQuantity & " Price : " & ordine2.Data.Price & " ID : " & ordine2.Data.OrderId & vbCrLf)  
+                    VerificaBilancio()
+                    Exit For
+                Catch ex As Exception
+                    TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR BUY : " & SCAMBI(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message & vbCrLf)
+                End Try
+            ElseIf Volume / x < 0.005 / ToBTC(BaseASSET(n)) Then
+                Exit For
+            End If
+        Next
+    End Sub
+    Private Sub LBuy1(ByVal n As Integer)
+        Dim Volume As Decimal = Math.Round((BILANCIOdisp(QuoteASSET(n)) - BILANCIOideale(QuoteASSET(n))) / priceMin(n), 8)
+        For x = 1 To 10
+            If Volume / x > 0.005 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(BaseASSET(n)) + BILANCIOordini(BaseASSET(n))) + (Volume / x) <= BILANCIOideale(BaseASSET(n)) Then
+                Try
+                    Dim ordine2 = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Limit, Mdecimal((Volume / x), VolumeMin(n)), price:=Mdecimal(price(n) - (price(n) / 80), MinPrice(n)), timeInForce:=TimeInForce.GoodTillCancel)
+                    TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Limit : " & ordine2.Data.Symbol & " Volume : " & ordine2.Data.OriginalQuantity & " Price : " & ordine2.Data.Price & " ID : " & ordine2.Data.OrderId & vbCrLf)
                     VerificaBilancio()
                     Exit For
                 Catch ex As Exception
