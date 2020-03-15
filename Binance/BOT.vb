@@ -119,8 +119,6 @@ Public Class BOT
         VolumeMin.Clear()
         Periodo.Clear()
         ASSETDisp.Add(info.Data.Symbols(0).BaseAsset)
-        NumericAssetOwn.Maximum = ASSET.Length
-        NumericAssetOwn.Value = NumericAssetOwn.Maximum
         For p As Integer = 0 To My.Settings.period.Count - 1
             For x As Integer = 0 To info.Data.Symbols.Count - 1
                 For a As Integer = 0 To ass
@@ -164,12 +162,22 @@ Public Class BOT
         ReDim BILANCIOideale(ass)
         ReDim ToBTC(ass)
         ReDim ChartX(sl)
+        StabilityTest()
         makeChart()
         OHLC()
         VerificaBilancio()
         ReadingIndicator()
         MakeListView()
         UpdateListView()
+        NumericAssetOwn.Maximum = ASSET.Length
+        NumericAssetOwn.Value = NumericAssetOwn.Maximum
+    End Sub
+    Private Sub StabilityTest()
+        Dim x As Integer = SCAMBI.Count / My.Settings.period.Count
+        Dim y As Integer = ASSET.Length
+        If Not ((y * y) - y) / 2 = x Then
+            TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " >  /!\ WARNING : The current configuration of the assets makes the BOT UNSTABLE" & vbCrLf)
+        End If
     End Sub
     Private Sub makeChart()
         For n As Integer = 0 To ChartX.Length - 1
