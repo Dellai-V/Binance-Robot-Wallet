@@ -31,7 +31,7 @@ Public Class BOT
     ' set app.confing 
     Dim APIkey As String
     Dim APISecret As String
-    Dim Periodo As KlineInterval = KlineInterval.OneDay
+    Dim Periodo As New List(Of String)
     Dim Timer As Integer = 10 'min
     Dim ind() As String = {"EMA5", "EMA10", "EMA20", "EMA30", "EMA50", "EMA100", "EMA200", "SMA5", "SMA10", "SMA20", "SMA30", "SMA50", "SMA100", "SMA200", "MACD", "MACD-EMA", "WMA", "RSI", "CCI", "W%R"}
     '############################################
@@ -48,41 +48,53 @@ Public Class BOT
     End Sub
     Public Sub LoadConfig()
         Timer = My.Settings.UPtimer
-        Timer1.Interval = Timer * 60000
-        Select Case My.Settings.period
-            Case "1W"
-                Periodo = KlineInterval.OneWeek
-            Case "3D"
-                Periodo = KlineInterval.ThreeDay
-            Case "1D"
-                Periodo = KlineInterval.OneDay
-            Case "12h"
-                Periodo = KlineInterval.TwelveHour
-            Case "8h"
-                Periodo = KlineInterval.EightHour
-            Case "6h"
-                Periodo = KlineInterval.SixHour
-            Case "4h"
-                Periodo = KlineInterval.FourHour
-            Case "2h"
-                Periodo = KlineInterval.TwoHour
-            Case "1h"
-                Periodo = KlineInterval.OneHour
-            Case "30m"
-                Periodo = KlineInterval.ThirtyMinutes
-        End Select
-        LoadAPI()
-    End Sub
-    Public Sub LoadAPI()
         APIkey = My.Settings.APIkey
         APISecret = My.Settings.APIsecret
+        Timer1.Interval = Timer * 60000
+        LoadAPI()
+    End Sub
+    Private Function Interval(ByRef i As String) As KlineInterval
+        Select Case i
+            Case "1W"
+                Return KlineInterval.OneWeek
+            Case "3D"
+                Return KlineInterval.ThreeDay
+            Case "1D"
+                Return KlineInterval.OneDay
+            Case "12h"
+                Return KlineInterval.TwelveHour
+            Case "8h"
+                Return KlineInterval.EightHour
+            Case "6h"
+                Return KlineInterval.SixHour
+            Case "4h"
+                Return KlineInterval.FourHour
+            Case "2h"
+                Return KlineInterval.TwoHour
+            Case "1h"
+                Return KlineInterval.OneHour
+            Case "30m"
+                Return KlineInterval.ThirtyMinutes
+            Case "15m"
+                Return KlineInterval.FifteenMinutes
+            Case "5m"
+                Return KlineInterval.FiveMinutes
+            Case "3m"
+                Return KlineInterval.ThreeMinutes
+            Case "1m"
+                Return KlineInterval.OneMinute
+            Case Else
+                Return KlineInterval.ThreeDay
+        End Select
+    End Function
+    Public Sub LoadAPI()
         If APIkey.Length = 64 And APISecret.Length = 64 Then
             client.SetApiCredentials(APIkey, APISecret)
             info = client.GetExchangeInfo()
             Dim accountInfo = client.GetAccountInfo()
             If accountInfo.Error Is Nothing Then
                 LoadVar()
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " >  Account Type : " & accountInfo.Data.AccountType & "  |   Asset : " & ASSET.Length & "  |  Exchange : " & SCAMBI.Count & "  |  Indicators : " & ind.Count & "  |  Update Time : " & Timer & " min  | Period : " & Periodo.ToString & vbCrLf)
+                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " >  Account Type : " & accountInfo.Data.AccountType & "  |   Asset : " & ASSET.Length & "  |  Exchange : " & SCAMBI.Count & "  |  Indicators : " & ind.Count & "  |  Update Time : " & Timer & " min" & vbCrLf)
                 stato = True
             Else
                 TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR API : wrong settings" & vbCrLf)
@@ -105,36 +117,38 @@ Public Class BOT
         ASSETDisp.Clear()
         MinPrice.Clear()
         VolumeMin.Clear()
-        XComboBox2.Items.Clear()
+        Periodo.Clear()
         ASSETDisp.Add(info.Data.Symbols(0).BaseAsset)
-        For x As Integer = 0 To info.Data.Symbols.Count - 1
-            For a As Integer = 0 To ass
-                For b As Integer = 0 To ass
-                    If ASSET(a) = info.Data.Symbols(x).BaseAsset And ASSET(b) = info.Data.Symbols(x).QuoteAsset Then
-                        SCAMBI.Add(info.Data.Symbols(x).Name)
-                        XComboBox2.Items.Add(info.Data.Symbols(x).Name)
-                        BaseASSET.Add(a)
-                        QuoteASSET.Add(b)
-                        MinPrice.Add(info.Data.Symbols(x).PriceFilter.MinPrice)
-                        VolumeMin.Add(info.Data.Symbols(x).LotSizeFilter.MinQuantity)
-                        TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SYMBOL : " & info.Data.Symbols(x).Name & "  |  Min Trade : " & info.Data.Symbols(x).LotSizeFilter.MinQuantity & " " & ASSET(a) & " |  Min Price : " & info.Data.Symbols(x).PriceFilter.MinPrice & " " & ASSET(b) & vbCrLf)
+        For p As Integer = 0 To My.Settings.period.Count - 1
+            For x As Integer = 0 To info.Data.Symbols.Count - 1
+                For a As Integer = 0 To ass
+                    For b As Integer = 0 To ass
+                        If ASSET(a) = info.Data.Symbols(x).BaseAsset And ASSET(b) = info.Data.Symbols(x).QuoteAsset Then
+                            SCAMBI.Add(info.Data.Symbols(x).Name)
+                            BaseASSET.Add(a)
+                            QuoteASSET.Add(b)
+                            Periodo.Add(My.Settings.period(p))
+                            MinPrice.Add(info.Data.Symbols(x).PriceFilter.MinPrice)
+                            VolumeMin.Add(info.Data.Symbols(x).LotSizeFilter.MinQuantity)
+                            '  TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SYMBOL : " & info.Data.Symbols(x).Name & " |  Period : " & My.Settings.period(p) & "  |  Min Trade : " & info.Data.Symbols(x).LotSizeFilter.MinQuantity & " " & ASSET(a) & " |  Min Price : " & info.Data.Symbols(x).PriceFilter.MinPrice & " " & ASSET(b) & vbCrLf)
+                            Exit For
+                        End If
+                    Next
+                Next
+                For n As Integer = 0 To ASSETDisp.Count
+                    If ASSETDisp(n) = info.Data.Symbols(x).BaseAsset Then
                         Exit For
+                    ElseIf n = ASSETDisp.Count - 1 Then
+                        ASSETDisp.Add(info.Data.Symbols(x).BaseAsset)
                     End If
                 Next
-            Next
-            For n As Integer = 0 To ASSETDisp.Count
-                If ASSETDisp(n) = info.Data.Symbols(x).BaseAsset Then
-                    Exit For
-                ElseIf n = ASSETDisp.Count - 1 Then
-                    ASSETDisp.Add(info.Data.Symbols(x).BaseAsset)
-                End If
-            Next
-            For n As Integer = 0 To ASSETDisp.Count
-                If ASSETDisp(n) = info.Data.Symbols(x).QuoteAsset Then
-                    Exit For
-                ElseIf n = ASSETDisp.Count - 1 Then
-                    ASSETDisp.Add(info.Data.Symbols(x).QuoteAsset)
-                End If
+                For n As Integer = 0 To ASSETDisp.Count
+                    If ASSETDisp(n) = info.Data.Symbols(x).QuoteAsset Then
+                        Exit For
+                    ElseIf n = ASSETDisp.Count - 1 Then
+                        ASSETDisp.Add(info.Data.Symbols(x).QuoteAsset)
+                    End If
+                Next
             Next
         Next
         Dim sl As Integer = SCAMBI.Count - 1
@@ -151,7 +165,7 @@ Public Class BOT
         makeChart()
         OHLC()
         VerificaBilancio()
-        VerificaMigliorePeggiore()
+        ReadingIndicator()
         MakeListView()
         UpdateListView()
     End Sub
@@ -178,9 +192,9 @@ Public Class BOT
                 End If
                 Dim trade_stream As Threading.Tasks.Task(Of CryptoExchange.Net.Objects.WebCallResult(Of IEnumerable(Of BinanceKline)))
                 If last(n) = Nothing Then
-                    trade_stream = client.GetKlinesAsync(SCAMBI(n), Periodo)
+                    trade_stream = client.GetKlinesAsync(SCAMBI(n), Interval(Periodo(n)))
                 Else
-                    trade_stream = client.GetKlinesAsync(SCAMBI(n), Periodo, startTime:=last(n))
+                    trade_stream = client.GetKlinesAsync(SCAMBI(n), Interval(Periodo(n)), startTime:=last(n))
                     ChartX(n).Series("Data").Points.RemoveAt(ChartX(n).Series("Data").Points.Count - 1)
                 End If
                 If trade_stream.Result.Error Is Nothing Then
@@ -307,20 +321,21 @@ Public Class BOT
             ListView3.Items(x).SubItems(3).Text = Math.Round(BILANCIOordini(x), 8)
             ListView3.Items(x).SubItems(4).Text = BILANCIOideale(x)
         Next
+        TextLog.ScrollToCaret()
     End Sub
     Private Sub MakeListView()
         Dim p As Boolean = False
         ListView2.Items.Clear()
         ListView2.Columns.Clear()
-        ListView2.Columns.Add("Name", 100)
-        ListView2.Columns.Add("Price", 100)
-        ListView2.Columns.Add("Higth", 100)
-        ListView2.Columns.Add("Low", 100)
+        ListView2.Columns.Add("Name", 130)
+        ListView2.Columns.Add("Price", 130)
+        ListView2.Columns.Add("Higth", 130)
+        ListView2.Columns.Add("Low", 130)
         For i As Integer = 0 To ind.Length - 1
             ListView2.Columns.Add(ind(i), 100)
         Next
         For x As Integer = 0 To SCAMBI.Count - 1
-            ListView2.Items.Add(SCAMBI(x))
+            ListView2.Items.Add(SCAMBI(x) & " - " & Periodo(x))
             ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = price(x)
             ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = priceMax(x)
             ListView2.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = priceMin(x)
@@ -371,21 +386,21 @@ Public Class BOT
                 Next
             Next
             CalcoloBTC()
-            Chartinfo()
-            ChartBTCtot()
-            XLabel1.Text = "Tot : " & Math.Round(BTCtot, 6) & " " & ASSET(0)
+            LabelTOT.Text = "Tot : " & Math.Round(BTCtot, 6) & " " & ASSET(0)
             Dim USDtot As Decimal = 0
-            For a As Integer = 0 To SCAMBI.Count - 1
+            For a As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
                 If BaseASSET(a) = 0 Then
                     If ASSET(QuoteASSET(a)) = "USDT" Or ASSET(QuoteASSET(a)) = "BUSD" Or ASSET(QuoteASSET(a)) = "PAX" Or ASSET(QuoteASSET(a)) = "TUSD" Or ASSET(QuoteASSET(a)) = "USDC" Then
                         USDtot = BTCtot * price(a)
                     End If
                 End If
             Next
-            XLabel8.Text = " ~ " & Math.Round(USDtot, 2) & " $"
+            LabelUSD.Text = " ~ " & Math.Round(USDtot, 2) & " $"
         Catch ex As Exception
             TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR Balances : " & ex.Message & vbCrLf)
         End Try
+        Chartinfo()
+        ChartBTCtot()
         VerificaPosizioniAperte()
     End Sub
     Private Sub CalcoloBTC()
@@ -455,11 +470,11 @@ Public Class BOT
         Next
         dif = BTCtot - dif
         If dif > 0 Then
-            XLabel2.Text = "1D : +" & Math.Round(dif, 4) & "  " & Math.Round((dif / BTCtot) * 100, 2) & "%"
-            XLabel2.ForeColor = Color.DarkSeaGreen
+            Label1D.Text = "1D : +" & Math.Round(dif, 4) & "  " & Math.Round((dif / BTCtot) * 100, 2) & "%"
+            Label1D.ForeColor = Color.DarkSeaGreen
         Else
-            XLabel2.Text = "1D : " & Math.Round(dif, 4) & "  " & Math.Round((dif / BTCtot) * 100, 2) & "%"
-            XLabel2.ForeColor = Color.Salmon
+            Label1D.Text = "1D : " & Math.Round(dif, 4) & "  " & Math.Round((dif / BTCtot) * 100, 2) & "%"
+            Label1D.ForeColor = Color.Salmon
         End If
         For x As Integer = 0 To Chart2.Series(0).Points.Count - 1
             If Chart2.Series(0).Points(Chart2.Series(0).Points.Count - 1 - x).XValue > DateTime.UtcNow.ToUniversalTime.AddDays(-7).ToOADate Then
@@ -470,12 +485,21 @@ Public Class BOT
         Next
         dif = BTCtot - dif
         If dif > 0 Then
-            XLabel3.Text = "7D : +" & Math.Round(dif, 4) & "  " & Math.Round((dif / BTCtot) * 100, 2) & "%"
-            XLabel3.ForeColor = Color.DarkSeaGreen
+            Label7D.Text = "7D : +" & Math.Round(dif, 4) & "  " & Math.Round((dif / BTCtot) * 100, 2) & "%"
+            Label7D.ForeColor = Color.DarkSeaGreen
         Else
-            XLabel3.Text = "7D : " & Math.Round(dif, 4) & "  " & Math.Round((dif / BTCtot) * 100, 2) & "%"
-            XLabel3.ForeColor = Color.Salmon
+            Label7D.Text = "7D : " & Math.Round(dif, 4) & "  " & Math.Round((dif / BTCtot) * 100, 2) & "%"
+            Label7D.ForeColor = Color.Salmon
         End If
+    End Sub
+    Private Sub CancellaOrdini(ByRef Symbol As String)
+        Dim ordini = client.GetOpenOrders
+        For x As Integer = 0 To ordini.Data.Count - 1
+            If ordini.Data(x).Symbol = Symbol Then
+                client.CancelOrder(ordini.Data(x).Symbol, ordini.Data(x).OrderId)
+                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > Order canceled : " & ordini.Data(x).Symbol & "  ID : " & ordini.Data(x).OrderId & vbCrLf)
+            End If
+        Next
     End Sub
     Private Sub VerificaPosizioniAperte()
         Try
@@ -491,9 +515,9 @@ Public Class BOT
                 If ordini.Data(x).Side = 0 Then
                     ListView4.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = "BUY"
                     ListView4.Items(x).ForeColor = Color.DarkSeaGreen
-                    For n As Integer = 0 To SCAMBI.Count - 1
+                    For n As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
                         If ordini.Data(x).Symbol = SCAMBI(n) Then
-                            If BILANCIOdisp(BaseASSET(n)) + BILANCIOordini(BaseASSET(n)) > BILANCIOideale(BaseASSET(n)) And CheckBox1.Checked = True Then
+                            If BILANCIOdisp(BaseASSET(n)) + BILANCIOordini(BaseASSET(n)) > BILANCIOideale(BaseASSET(n)) and  BILANCIOdisp(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n)) < BILANCIOideale(QuoteASSET(n)) And CheckBox1.Checked = True Then
                                 client.CancelOrder(ordini.Data(x).Symbol, ordini.Data(x).OrderId)
                                 TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > Order canceled : " & ordini.Data(x).Symbol & "  ID : " & ordini.Data(x).OrderId & vbCrLf)
                             Else
@@ -504,9 +528,9 @@ Public Class BOT
                 Else
                     ListView4.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = "SELL"
                     ListView4.Items(x).ForeColor = Color.Salmon
-                    For n As Integer = 0 To SCAMBI.Count - 1
+                    For n As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
                         If ordini.Data(x).Symbol = SCAMBI(n) Then
-                            If BILANCIOdisp(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n)) > BILANCIOideale(QuoteASSET(n)) And CheckBox1.Checked = True Then
+                            If BILANCIO(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n)) > BILANCIOideale(QuoteASSET(n)) and  BILANCIOdisp(BaseASSET(n)) + BILANCIOordini(BaseASSET(n)) < BILANCIOideale(BaseASSET(n))  And CheckBox1.Checked = True Then
                                 client.CancelOrder(ordini.Data(x).Symbol, ordini.Data(x).OrderId)
                                 TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > Order canceled : " & ordini.Data(x).Symbol & "  ID : " & ordini.Data(x).OrderId & vbCrLf)
                             Else
@@ -531,161 +555,231 @@ Public Class BOT
         End Try
     End Sub
     Dim priority() As Integer
-    Private Sub VerificaMigliorePeggiore()
+    Dim topC() As Integer
+    Private Sub ReadingIndicator()
         Dim prioTot As Integer = 0
         priority = Nothing
         ReDim priority(ASSET.Length - 1)
         For n As Integer = 0 To SCAMBI.Count - 1
             If indicator(n, "CCI") > 200 And indicator(n, "CCI") < indicator(n, "CCI", 1) And indicator(n, "CCI") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n)) * 3
+                priority(QuoteASSET(n)) += 2
             ElseIf indicator(n, "CCI") < -200 And indicator(n, "CCI") > indicator(n, "CCI", 1) And Not indicator(n, "CCI") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n)) * 3
+                priority(BaseASSET(n)) += 2
             End If
             If indicator(n, "RSI") > 80 And indicator(n, "RSI") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n)) * 3
+                priority(QuoteASSET(n)) += 2
             ElseIf indicator(n, "RSI") < 20 And indicator(n, "RSI") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n)) * 3
+                priority(BaseASSET(n)) += 2
             End If
             If (indicator(n, "MACD") - indicator(n, "MACD-EMA")) > 0 And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) > (indicator(n, "MACD", 1) - indicator(n, "MACD-EMA", 1)) And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n)) * 3
+                priority(BaseASSET(n)) += 2
             ElseIf (indicator(n, "MACD") - indicator(n, "MACD-EMA")) < 0 And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) < (indicator(n, "MACD", 1) - indicator(n, "MACD-EMA", 1)) And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n)) * 3
+                priority(QuoteASSET(n)) += 2
             End If
             If indicator(n, "W%R") > -80 And indicator(n, "W%R") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "W%R") < -20 And indicator(n, "W%R") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "EMA5") < price(n) And indicator(n, "EMA5") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "EMA5") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "EMA10") < price(n) And indicator(n, "EMA10") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "EMA10") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "EMA20") < price(n) And indicator(n, "EMA20") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "EMA20") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "EMA30") < price(n) And indicator(n, "EMA30") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "EMA30") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "EMA50") < price(n) And indicator(n, "EMA50") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "EMA50") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "EMA100") < price(n) And indicator(n, "EMA100") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "EMA100") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "EMA200") < price(n) And indicator(n, "EMA200") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "EMA200") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "SMA5") < price(n) And indicator(n, "SMA5") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "SMA5") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "SMA10") < price(n) And indicator(n, "SMA10") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "SMA10") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "SMA20") < price(n) And indicator(n, "SMA20") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "SMA20") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "SMA30") < price(n) And indicator(n, "SMA30") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "SMA30") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "SMA50") < price(n) And indicator(n, "SMA50") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "SMA50") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "SMA100") < price(n) And indicator(n, "SMA100") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "SMA100") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "SMA200") < price(n) And indicator(n, "SMA200") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "SMA200") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
             If indicator(n, "WMA") < price(n) And indicator(n, "WMA") <> Nothing Then
-                priority(BaseASSET(n)) += ASSETSplit(BaseASSET(n))
+                priority(BaseASSET(n)) += 1
             ElseIf indicator(n, "WMA") <> Nothing Then
-                priority(QuoteASSET(n)) += ASSETSplit(QuoteASSET(n))
+                priority(QuoteASSET(n)) += 1
             End If
         Next
-        Dim m() As Integer
-        ReDim m(priority.Length - 1)
-        For n As Integer = 0 To SCAMBI.Count - 1
-            If priority(BaseASSET(n)) > priority(QuoteASSET(n)) Then
-                m(BaseASSET(n)) += 1
-            Else
-                m(QuoteASSET(n)) += 1
+
+        PriorityTop()
+        Dim q As Integer = 0 'numero di cripto 
+        For n As Integer = q + 1 To topC.Length - 1
+            If Not priority(topC(n)) = priority(topC(q)) Then
+                priority(topC(n)) = 0
             End If
         Next
-        Dim top As Integer = 0
-        For n As Integer = 0 To priority.Length - 1
-            If m(n) = Nothing Then
-                priority(n) = 0
-            Else
-                priority(n) = m(n) * priority(n)
-            End If
+        For n As Integer = 0 To topC.Length - 1
+            priority(n) = priority(n) * ASSETSplit(n) * priority(n)
+        Next
+        For n As Integer = 0 To ASSET.Length - 1
             prioTot += priority(n)
-            If priority(n) > top Then
-                top = priority(n)
-            End If
         Next
         For n As Integer = 0 To ASSET.Length - 1
             BILANCIOideale(n) = Math.Round(((BTCtot / prioTot) * priority(n)) / ToBTC(n), 8)
         Next
+        StartTrade()
+    End Sub
+    Private Sub StartTrade()
         If CheckBox1.Checked = True Then
-            For n As Integer = 0 To SCAMBI.Count - 1
-                If priority(BaseASSET(n)) = top Or priority(QuoteASSET(n)) = 0 Then
-                    If indicator(n, "EMA10") > price(n) Then
-                        MBuy(n)
-                    Else
-                        LBuy(n)
-                    End If
-                Else
-                    LBuy(n)
-                End If
-
-                If priority(BaseASSET(n)) = 0 Or priority(QuoteASSET(n)) = top Then
-                    If indicator(n, "EMA10") < price(n) Then
-                        MSell(n)
-                    Else
-                        LSell(n)
-                    End If
-                Else
-                    LSell(n)
-                End If
+            For h As Integer = 0 To topC.Length - 2
+                For l As Integer = 1 To topC.Length - 1
+                    For n As Integer = 0 To (SCAMBI.Count / My.Settings.period.Count) - 1
+                        If BaseASSET(n) = topC(h) And QuoteASSET(n) = topC(topC.Length - l) And topC.Length - l > h Then
+                            If priority(QuoteASSET(n)) = 0 And BILANCIO(BaseASSET(n)) < (BILANCIOideale(BaseASSET(n)) / 1.1) And QuoteASSET(n) <> topC(h + 1) Then
+                                CancellaOrdini(SCAMBI(n))
+                                MBuy(n, 5)
+                                LBuy(n, 1)
+                            Else
+                                CancellaOrdini(SCAMBI(n))
+                                MBuy(n, 10)
+                                LBuy(n, 2)
+                            End If
+                        End If
+                        If QuoteASSET(n) = topC(h) And BaseASSET(n) = topC(topC.Length - l) And topC.Length - l > h Then
+                            If priority(BaseASSET(n)) = 0 And BILANCIO(QuoteASSET(n)) < (BILANCIOideale(QuoteASSET(n)) / 1.1) And BaseASSET(n) <> topC(h + 1) Then
+                                CancellaOrdini(SCAMBI(n))
+                                MSell(n, 5)
+                                LSell(n, 1)
+                            Else
+                                CancellaOrdini(SCAMBI(n))
+                                MSell(n, 10)
+                                LSell(n, 2)
+                            End If
+                        End If
+                    Next
+                Next
             Next
         End If
     End Sub
-    Private Sub LSell(ByVal n As Integer)
-        Dim Volume As Decimal = BILANCIOdisp(BaseASSET(n)) - BILANCIOideale(BaseASSET(n))
-        For x = 1 To 10
-            If Volume / x > 0.005 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n))) + ((Volume / x) * priceMax(n)) <= BILANCIOideale(QuoteASSET(n)) Then
+    Private Sub PriorityTop()
+        Dim l As Integer = priority.Length - 1
+        ReDim topC(l)
+        For p As Integer = 0 To l
+            If priority(p) > priority(topC(0)) Then
+                topC(0) = p
+            End If
+        Next
+        For p As Integer = 1 To l
+            If priority(p) < priority(topC(1)) Then
+                For t As Integer = 1 To l
+                    topC(t) = p
+                Next
+            End If
+        Next
+        For t As Integer = 1 To l
+            For p As Integer = 0 To l
+                If priority(p) <= priority(topC(t - 1)) And priority(p) >= priority(topC(t)) Then
+                    Dim ex As Boolean = False
+                    For tx As Integer = 0 To l
+                        If topC(tx) = p Then
+                            ex = True
+                        End If
+                    Next
+                    If ex = False Then
+                        topC(t) = p
+                    End If
+                End If
+            Next
+        Next
+        LabelSELL.Text = "SELL : " & ASSET(topC(topC.Length - 1))
+        LabelBUY.Text = "BUY : " & ASSET(topC(0))
+    End Sub
+    Private Function indMed(ByRef s As Integer, ByRef i As String) As Decimal
+        Dim c As Integer = 0
+        Dim p As Decimal = 0
+        For x As Integer = 0 To SCAMBI.Count - 1
+            If SCAMBI(x) = SCAMBI(s) Then
+                c += 1
+                p += indicator(s, i)
+            End If
+        Next
+        Return Mdecimal(p / c, MinPrice(s))
+    End Function
+    Private Function BuyMed(ByRef s As Integer) As Decimal
+        Dim c As Integer = 0
+        Dim p As Decimal = 0
+        For x As Integer = 0 To SCAMBI.Count - 1
+            If SCAMBI(x) = SCAMBI(s) Then
+                c += 1
+                p += priceMin(x)
+            End If
+        Next
+        Return Mdecimal(p / c, MinPrice(s))
+    End Function
+    Private Function SellMed(ByRef s As Integer) As Decimal
+        Dim c As Integer = 0
+        Dim p As Decimal = 0
+        For x As Integer = 0 To SCAMBI.Count - 1
+            If SCAMBI(x) = SCAMBI(s) Then
+                c += 1
+                p += priceMax(x)
+            End If
+        Next
+        Return Mdecimal(p / c, MinPrice(s))
+    End Function
+    Private Sub LSell(ByVal n As Integer, Optional ByVal Div As Integer = 1)
+        Dim Volume As Decimal = Math.Round(BILANCIOdisp(BaseASSET(n)) - BILANCIOideale(BaseASSET(n)), 8)
+        For x = Div To 10
+            If Volume / x > 0.005 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n))) + ((Volume / x) * SellMed(n)) <= BILANCIOideale(QuoteASSET(n)) Then
                 Try
-                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Limit, Mdecimal(Volume / x, n), price:=priceMax(n), timeInForce:=TimeInForce.GoodTillCancel)
+                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Limit, Mdecimal((Volume / x), VolumeMin(n)), price:=SellMed(n), timeInForce:=TimeInForce.GoodTillCancel)
                     TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
                     VerificaBilancio()
                     Exit For
@@ -697,12 +791,12 @@ Public Class BOT
             End If
         Next
     End Sub
-    Private Sub LBuy(ByVal n As Integer)
-        Dim Volume As Decimal = (BILANCIOdisp(QuoteASSET(n)) - BILANCIOideale(QuoteASSET(n))) / priceMin(n)
-        For x = 1 To 10
+    Private Sub LBuy(ByVal n As Integer, Optional ByVal Div As Integer = 1)
+        Dim Volume As Decimal = Math.Round((BILANCIOdisp(QuoteASSET(n)) - BILANCIOideale(QuoteASSET(n))) / (priceMin(n)), 8)
+        For x = Div To 10
             If Volume / x > 0.005 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(BaseASSET(n)) + BILANCIOordini(BaseASSET(n))) + (Volume / x) <= BILANCIOideale(BaseASSET(n)) Then
                 Try
-                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Limit, Mdecimal(Volume / x, n), price:=priceMin(n), timeInForce:=TimeInForce.GoodTillCancel)
+                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Limit, Mdecimal((Volume / x), VolumeMin(n)), price:=BuyMed(n), timeInForce:=TimeInForce.GoodTillCancel)
                     TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
                     VerificaBilancio()
                     Exit For
@@ -714,12 +808,12 @@ Public Class BOT
             End If
         Next
     End Sub
-    Private Sub MSell(ByVal n As Integer)
-        Dim Volume As Decimal = BILANCIOdisp(BaseASSET(n)) - BILANCIOideale(BaseASSET(n))
-        For x = 1 To 10
+    Private Sub MSell(ByVal n As Integer, Optional ByVal Div As Integer = 1)
+        Dim Volume As Decimal = Math.Round(BILANCIOdisp(BaseASSET(n)) - BILANCIOideale(BaseASSET(n)), 8)
+        For x = Div To 10
             If Volume / x > 0.1 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(QuoteASSET(n)) + BILANCIOordini(QuoteASSET(n))) + ((Volume / x) * priceMax(n)) <= BILANCIOideale(QuoteASSET(n)) Then
                 Try
-                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Market, Mdecimal(Volume / x, n))
+                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Sell, OrderType.Market, Mdecimal(Volume / x, VolumeMin(n)))
                     TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & price(n) & " ID : " & ordine.Data.OrderId & vbCrLf)
                     VerificaBilancio()
                     Exit For
@@ -731,12 +825,12 @@ Public Class BOT
             End If
         Next
     End Sub
-    Private Sub MBuy(ByVal n As Integer)
-        Dim Volume As Decimal = (BILANCIOdisp(QuoteASSET(n)) - BILANCIOideale(QuoteASSET(n))) / priceMin(n)
-        For x = 1 To 10
+    Private Sub MBuy(ByVal n As Integer, Optional ByVal Div As Integer = 1)
+        Dim Volume As Decimal = Math.Round((BILANCIOdisp(QuoteASSET(n)) - BILANCIOideale(QuoteASSET(n))) / priceMin(n), 8)
+        For x = Div To 10
             If Volume / x > 0.1 / ToBTC(BaseASSET(n)) And (BILANCIOdisp(BaseASSET(n)) + BILANCIOordini(BaseASSET(n))) + (Volume / x) <= BILANCIOideale(BaseASSET(n)) Then
                 Try
-                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Market, Mdecimal(Volume / x, n))
+                    Dim ordine = client.PlaceOrder(SCAMBI(n), OrderSide.Buy, OrderType.Market, Mdecimal(Volume / x, VolumeMin(n)))
                     TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & price(n) & " ID : " & ordine.Data.OrderId & vbCrLf)
                     VerificaBilancio()
                     Exit For
@@ -748,11 +842,10 @@ Public Class BOT
             End If
         Next
     End Sub
-    Private Function Mdecimal(ByVal vol As Decimal, ByVal n As Integer) As Decimal
+    Private Function Mdecimal(ByVal vol As Decimal, ByVal v As Decimal) As Decimal
         Dim dec As Integer = 0
-        Dim v As Decimal = VolumeMin(n)
         Dim i As Decimal = 0.5
-        For x As Integer = 0 To 100
+        For x As Integer = 0 To 8
             If Not v < 1 Then
                 Exit For
             Else
@@ -768,21 +861,13 @@ Public Class BOT
         If stato = True Then
             OHLC()
             VerificaBilancio()
-            VerificaMigliorePeggiore()
+            ReadingIndicator()
             UpdateListView()
         End If
         Timer1.Start()
     End Sub
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Trade()
-    End Sub
-    Private Sub XComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs)
-        last = Nothing
-        ReDim last(SCAMBI.Count - 1)
-    End Sub
-    Private Sub XButton1_Click(sender As Object, e As EventArgs) Handles XButton1.Click
-        Configuration.Show()
-        CheckBox1.Checked = False
     End Sub
     Private Sub ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem1.Click
         If ListView4.SelectedItems.Count = 1 Then
@@ -791,61 +876,8 @@ Public Class BOT
             VerificaPosizioniAperte()
         End If
     End Sub
-    Private Sub XComboBox1_SelectedIndexChanged_1(sender As Object, e As EventArgs) Handles XComboBox1.SelectedIndexChanged
-        XButton2.Text = XComboBox1.SelectedItem
-        XNormalTextBox1.Text = ListView2.Items(XComboBox2.SelectedIndex).SubItems(1).Text
-    End Sub
-    Private Sub XComboBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles XComboBox2.SelectedIndexChanged
-        XLabel4.Text = ASSET(QuoteASSET(XComboBox2.SelectedIndex))
-        XNormalTextBox1.Text = ListView2.Items(XComboBox2.SelectedIndex).SubItems(1).Text
-    End Sub
-    Private Sub XButton3_Click(sender As Object, e As EventArgs) Handles XButton3.Click
-        '-
-        If XComboBox1.SelectedItem = "SELL" And ListView2.Items(XComboBox2.SelectedIndex).SubItems(1).Text >= XNormalTextBox1.Text Then
-        Else
-            XNormalTextBox1.Text = Convert.ToDecimal(XNormalTextBox1.Text) - MinPrice(XComboBox2.SelectedIndex)
-        End If
-    End Sub
-    Private Sub XButton4_Click(sender As Object, e As EventArgs) Handles XButton4.Click
-        '+
-        If XComboBox1.SelectedItem = "BUY" And ListView2.Items(XComboBox2.SelectedIndex).SubItems(1).Text <= XNormalTextBox1.Text Then
-        Else
-            XNormalTextBox1.Text = Convert.ToDecimal(XNormalTextBox1.Text) + MinPrice(XComboBox2.SelectedIndex)
-        End If
-    End Sub
-    Private Sub XButton2_Click(sender As Object, e As EventArgs) Handles XButton2.Click
-        If XComboBox1.SelectedItem = "BUY" And XComboBox3.SelectedItem = "LIMIT" Then
-            Try
-                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Buy, OrderType.Limit, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), XComboBox2.SelectedIndex), price:=XNormalTextBox1.Text, timeInForce:=TimeInForce.GoodTillCancel)
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
-                VerificaBilancio()
-            Catch ex As Exception
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR BUY : " & XComboBox2.SelectedItem & "  |  Volume : " & XNormalTextBox2.Text & " /!\ " & ex.Message & vbCrLf)
-            End Try
-        ElseIf XComboBox1.SelectedItem = "BUY" And XComboBox3.SelectedItem = "MARKET" Then
-            Try
-                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Buy, OrderType.Market, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), XComboBox2.SelectedIndex))
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > BUY Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & price(XComboBox2.SelectedIndex) & " ID : " & ordine.Data.OrderId & vbCrLf)
-                VerificaBilancio()
-            Catch ex As Exception
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR BUY : " & XComboBox2.SelectedItem & "  |  Volume : " & XNormalTextBox2.Text & " /!\ " & ex.Message & vbCrLf)
-            End Try
-        ElseIf XComboBox1.SelectedItem = "SELL" And XComboBox3.SelectedItem = "LIMIT" Then
-            Try
-                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Sell, OrderType.Limit, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), XComboBox2.SelectedIndex), price:=XNormalTextBox1.Text, timeInForce:=TimeInForce.GoodTillCancel)
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId & vbCrLf)
-                VerificaBilancio()
-            Catch ex As Exception
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR SELL : " & XComboBox2.SelectedItem & "  |  Volume : " & XNormalTextBox2.Text & " /!\ " & ex.Message & vbCrLf)
-            End Try
-        ElseIf XComboBox1.SelectedItem = "SELL" And XComboBox3.SelectedItem = "MARKET" Then
-            Try
-                Dim ordine = client.PlaceOrder(XComboBox2.SelectedItem, OrderSide.Sell, OrderType.Market, Mdecimal(Convert.ToDecimal(XNormalTextBox2.Text), XComboBox2.SelectedIndex))
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > SELL Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & price(XComboBox2.SelectedIndex) & " ID : " & ordine.Data.OrderId & vbCrLf)
-                VerificaBilancio()
-            Catch ex As Exception
-                TextLog.AppendText(DateTime.UtcNow.ToUniversalTime & " > ERROR BUY : " & XComboBox2.SelectedItem & "  |  Volume : " & XNormalTextBox2.Text & " /!\ " & ex.Message & vbCrLf)
-            End Try
-        End If
+    Private Sub ButtonSetting_Click(sender As Object, e As EventArgs) Handles ButtonSetting.Click
+        Configuration.Show()
+        CheckBox1.Checked = False
     End Sub
 End Class
