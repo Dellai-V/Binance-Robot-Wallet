@@ -119,6 +119,8 @@ Public Class BOT
         VolumeMin.Clear()
         Periodo.Clear()
         ASSETDisp.Add(info.Data.Symbols(0).BaseAsset)
+        NumericAssetOwn.Maximum = ASSET.Length
+        NumericAssetOwn.Value = NumericAssetOwn.Maximum
         For p As Integer = 0 To My.Settings.period.Count - 1
             For x As Integer = 0 To info.Data.Symbols.Count - 1
                 For a As Integer = 0 To ass
@@ -659,7 +661,7 @@ Public Class BOT
         Next
 
         PriorityTop()
-        Dim q As Integer = 0 'numero di cripto 
+        Dim q As Integer = NumericAssetOwn.Value - 1 'numero di cripto 
         For n As Integer = q + 1 To topC.Length - 1
             If Not priority(topC(n)) = priority(topC(q)) Then
                 priority(topC(n)) = 0
@@ -674,7 +676,6 @@ Public Class BOT
         For n As Integer = 0 To ASSET.Length - 1
             BILANCIOideale(n) = Math.Round(((BTCtot / prioTot) * priority(n)) / ToBTC(n), 8)
         Next
-        StartTrade()
     End Sub
     Private Sub StartTrade()
         If CheckBox1.Checked = True Then
@@ -862,12 +863,14 @@ Public Class BOT
             OHLC()
             VerificaBilancio()
             ReadingIndicator()
+            StartTrade()
             UpdateListView()
         End If
         Timer1.Start()
     End Sub
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Trade()
+        LabelUpdate.Text = "Next update : " & DateTime.UtcNow.ToUniversalTime.AddMilliseconds(Timer1.Interval)
     End Sub
     Private Sub ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem1.Click
         If ListView4.SelectedItems.Count = 1 Then
@@ -879,5 +882,20 @@ Public Class BOT
     Private Sub ButtonSetting_Click(sender As Object, e As EventArgs) Handles ButtonSetting.Click
         Configuration.Show()
         CheckBox1.Checked = False
+    End Sub
+
+    Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged
+        If CheckBox1.Checked = True Then
+            CheckBox1.ForeColor = Color.LightGreen
+        Else
+            CheckBox1.ForeColor = Color.Salmon
+        End If
+    End Sub
+
+    Private Sub NumericAssetOwn_ValueChanged(sender As Object, e As EventArgs) Handles NumericAssetOwn.ValueChanged
+        If stato = True Then
+            ReadingIndicator()
+            UpdateListView()
+        End If
     End Sub
 End Class

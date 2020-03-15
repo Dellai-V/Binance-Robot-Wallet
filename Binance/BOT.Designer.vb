@@ -61,9 +61,13 @@ Partial Class BOT
         Me.LabelUSD = New System.Windows.Forms.Label()
         Me.Label1D = New System.Windows.Forms.Label()
         Me.Label7D = New System.Windows.Forms.Label()
+        Me.NumericAssetOwn = New System.Windows.Forms.NumericUpDown()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.LabelUpdate = New System.Windows.Forms.Label()
         Me.ContextMenuStrip1.SuspendLayout()
         CType(Me.Chart2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Chart1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.NumericAssetOwn, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Timer1
@@ -321,6 +325,7 @@ Partial Class BOT
         Me.CheckBox1.AutoSize = True
         Me.CheckBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.CheckBox1.Font = New System.Drawing.Font("Consolas", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CheckBox1.ForeColor = System.Drawing.Color.Salmon
         Me.CheckBox1.Location = New System.Drawing.Point(119, 10)
         Me.CheckBox1.Name = "CheckBox1"
         Me.CheckBox1.Size = New System.Drawing.Size(119, 17)
@@ -376,12 +381,47 @@ Partial Class BOT
         Me.Label7D.TabIndex = 178
         Me.Label7D.Text = "7D : 0%"
         '
+        'NumericAssetOwn
+        '
+        Me.NumericAssetOwn.BackColor = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
+        Me.NumericAssetOwn.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.NumericAssetOwn.Font = New System.Drawing.Font("Consolas", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.NumericAssetOwn.ForeColor = System.Drawing.Color.White
+        Me.NumericAssetOwn.Location = New System.Drawing.Point(425, 10)
+        Me.NumericAssetOwn.Maximum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.NumericAssetOwn.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.NumericAssetOwn.Name = "NumericAssetOwn"
+        Me.NumericAssetOwn.Size = New System.Drawing.Size(42, 19)
+        Me.NumericAssetOwn.TabIndex = 179
+        Me.NumericAssetOwn.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(328, 12)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(91, 13)
+        Me.Label1.TabIndex = 180
+        Me.Label1.Text = "Asset to own :"
+        '
+        'LabelUpdate
+        '
+        Me.LabelUpdate.AutoSize = True
+        Me.LabelUpdate.Location = New System.Drawing.Point(530, 13)
+        Me.LabelUpdate.Name = "LabelUpdate"
+        Me.LabelUpdate.Size = New System.Drawing.Size(85, 13)
+        Me.LabelUpdate.TabIndex = 181
+        Me.LabelUpdate.Text = "Next update :"
+        '
         'BOT
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer), CType(CType(60, Byte), Integer))
         Me.ClientSize = New System.Drawing.Size(1384, 961)
+        Me.Controls.Add(Me.LabelUpdate)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.NumericAssetOwn)
         Me.Controls.Add(Me.Label7D)
         Me.Controls.Add(Me.Label1D)
         Me.Controls.Add(Me.LabelUSD)
@@ -406,6 +446,7 @@ Partial Class BOT
         Me.ContextMenuStrip1.ResumeLayout(False)
         CType(Me.Chart2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.Chart1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.NumericAssetOwn, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -442,4 +483,7 @@ Partial Class BOT
     Friend WithEvents LabelUSD As Label
     Friend WithEvents Label1D As Label
     Friend WithEvents Label7D As Label
+    Friend WithEvents NumericAssetOwn As NumericUpDown
+    Friend WithEvents Label1 As Label
+    Friend WithEvents LabelUpdate As Label
 End Class
