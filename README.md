@@ -1,7 +1,6 @@
 # Binance Robot Wallet
 
-> Source : https://github.com/Dellai-V/Binance-Robot-Wallet
-
+> Source : https://github.com/Dellai-V/Binance-Robot-Wallet<br>
 > Referral Binance : https://www.binance.com/en/register?ref=EORD9N10
 
 This software performs automatic cryptocurrency transactions using Binance exchange.
@@ -43,3 +42,67 @@ This code is for educational purposes only, and is totally free.
 - Press the "Add / Edit Asset" button (*7) to add or edit an asset (*5) with the split (*6) consideration you wish to have. The assets used will be listed in the list (*9), to remove them just select them in the list and click on the "Remove" button (*8).
 
 - To save the changes click on "Save" (*10). The configurations are saved in the "Binance.exe.config" file in the xml format.
+
+---------------
+
+# BOT WORK
+
+Uses indicators to analyze each graph, and based on the result decides how many and which cryipto should be owned, using the proportions you have set in the configurations.for example if you use a configuration:
+<pre>
+  Asset | Split
+   BTC  | 100
+   ETH  | 100
+   USDT | 50
+</pre>
+
+If the result of the indicators :
+<pre>
+          | BUY | SELL
+ BTC/ETH  | 10  |  10
+ BTC/USDT | 18  |  2
+ ETH/USDT | 15  |  5
+</pre>
+
+Based on the results of the indicators, the bot will tend to carry the wallet with the following proportion:
+
+ > Ideal Balance = (Total of positive indicators)^2 * Split
+ <pre>
+  Asset                      |  Ideal Balance
+  BTC  = 28^2 * 100 = 78400  |   ~ 54,7 %
+  ETH  = 25^2 * 100 = 62500  |   ~ 43,6 %
+  USDT = 7^2  * 50  = 2450   |   ~  1,7 %
+ </pre>
+ 
+ Therefore if you modify "Asset to own" following the example we will get:
+ 
+  <pre>
+  Asset to own |     3      |    2        |    1
+  BTC          |  ~ 54,7 %  |  ~ 55,64 %  |   100 %
+  ETH          |  ~ 43,6 %  |  ~ 44,36 %  |    0
+  USDT         |  ~  1,7 %  |    0        |    0  
+ </pre>
+ 
+ # TECHNICAL ANALYSIS
+ list of indicators used :
+ <pre>
+  EMA5
+  EMA10
+  EMA20
+  EMA30
+  EMA50
+  EMA100
+  EMA200
+  SMA5
+  SMA10
+  SMA20
+  SMA30
+  SMA50
+  SMA100
+  SMA200
+  MACD
+  MACD-EMA
+  WMA
+  RSI
+  CCI
+  W%R
+ </pre>
