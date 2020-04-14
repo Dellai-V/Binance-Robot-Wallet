@@ -41,7 +41,10 @@ This code is for educational purposes only, and is totally free.
 
 - Press the "Add / Edit Asset" button (*7) to add or edit an asset (*5) with the split (*6) consideration you wish to have. The assets used will be listed in the list (*9), to remove them just select them in the list and click on the "Remove" button (*8).
 
+> For correct operation, when adding a new asset, it must have the corresponding market with all the other currencies, otherwise the bot will not make a correct forecast.
+
 - To save the changes click on "Save" (*10). The configurations are saved in the "Binance.exe.config" file in the xml format.
+
 
 ---------------
 
