@@ -7,7 +7,7 @@ Public Class App
         If NumberFormatInfo.CurrentInfo.NumberDecimalSeparator = "," Then
             NumberFormatInfo.CurrentInfo.NumberDecimalSeparator = "."
         End If
-
+        Timer1.Interval = My.Settings.Ctimer * 1000
         Timer2.Interval = My.Settings.UPtimer * 60000
         Timer2.Start()
         Binance.LoadAPI()
@@ -18,9 +18,10 @@ Public Class App
         If Binance.OHLCDone = True Then
             Binance.OHLC()
             Binance.ReadingIndicator()
+
+            Binance.CalcoloBTC()
+            Binance.UpdateListView()
         End If
-        Binance.CalcoloBTC()
-        Binance.UpdateListView()
         Timer1.Start()
     End Sub
 
@@ -38,4 +39,7 @@ Public Class App
         APIsetting.Show()
     End Sub
 
+    Private Sub SettingBOTToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SettingBOTToolStripMenuItem.Click
+        Setting.Show()
+    End Sub
 End Class

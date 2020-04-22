@@ -131,6 +131,30 @@ Namespace My
                 Me("Split") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("5")>  _
+        Public Property Ctimer() As Integer
+            Get
+                Return CType(Me("Ctimer"),Integer)
+            End Get
+            Set
+                Me("Ctimer") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("1")>  _
+        Public Property ATO() As Integer
+            Get
+                Return CType(Me("ATO"),Integer)
+            End Get
+            Set
+                Me("ATO") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

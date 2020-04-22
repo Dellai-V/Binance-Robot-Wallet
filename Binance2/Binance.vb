@@ -13,13 +13,14 @@ Public Class MARKET
     Public MaxVolume As New List(Of Decimal)
 
     Public Last As New List(Of Date)
+    Public Volume As New List(Of Decimal)
     Public Price As New List(Of Decimal)
     Public PriceMin As New List(Of Decimal)
     Public PriceMax As New List(Of Decimal)
 
     Public Periodo As String
     Public Charts() As Chart
-    Public ind() As String = {"EMA5", "EMA10", "EMA20", "EMA30", "EMA50", "EMA100", "EMA200", "SMA5", "SMA10", "SMA20", "SMA30", "SMA50", "SMA100", "SMA200", "MACD", "MACD-EMA", "WMA", "RSI", "CCI", "W%R"}
+    Public ind() As String = {"EMA5", "EMA10", "EMA20", "EMA30", "EMA50", "EMA100", "EMA200", "SMA5", "SMA10", "SMA20", "SMA30", "SMA50", "SMA100", "SMA200", "MACD", "MACD-EMA", "WMA10", "WMA20", "RSI", "CCI", "W%R"}
 End Class
 Public Class ASSET
     Public Name As New List(Of String)
@@ -44,7 +45,7 @@ End Class
 
 Public Class Binance
     Dim api As New API
-    Dim asset As New ASSET
+    Public asset As New ASSET
     Dim market As New MARKET
     Async Sub LoadAPI()
         api.APIkey = My.Settings.APIKey
@@ -55,10 +56,10 @@ Public Class Binance
             api.info = Await api.client.GetExchangeInfoAsync()
             Dim accountInfo = Await api.client.GetAccountInfoAsync()
             If accountInfo.Error Is Nothing Then
-                api.stato = True
+                api.stato = accountInfo.Data.CanTrade
                 LoadVar()
-                Log("Account Type : " & accountInfo.Data.AccountType & " | Buyer Commission : " & accountInfo.Data.BuyerCommission & " | Can Trade : " & accountInfo.Data.CanTrade &
-                    " | Maker Commission : " & accountInfo.Data.MakerCommission & " | Seller Commission : " & accountInfo.Data.SellerCommission & " | Taker Commission : " & accountInfo.Data.TakerCommission)
+                Log("Account Type : " & accountInfo.Data.AccountType & " | Can Trade : " & accountInfo.Data.CanTrade &
+                    " | Maker Commission : " & accountInfo.Data.MakerCommission / 100 & "% | Taker Commission : " & accountInfo.Data.TakerCommission / 100 & "%")
             Else
                 LogError("ERROR API : wrong settings")
             End If
@@ -82,14 +83,17 @@ Public Class Binance
         asset.List.Clear()
         market.MinPrice.Clear()
         market.Last.Clear()
+        market.Volume.Clear()
         market.Price.Clear()
         market.MaxVolume.Clear()
         market.PriceMin.Clear()
         market.PriceMax.Clear()
 
     End Sub
-    Private Sub LoadVar()
+    Public Sub LoadVar()
         ResetVar()
+        App.Timer1.Interval = My.Settings.Ctimer * 1000
+        App.Timer2.Interval = My.Settings.UPtimer * 60000
         For x = 0 To My.Settings.Asset.Count - 1
             asset.Name.Add(My.Settings.Asset(x))
         Next
@@ -124,6 +128,7 @@ Public Class Binance
         For x = 0 To market.Name.Count - 1
             market.Last.Add(Nothing)
             market.Price.Add(Nothing)
+            market.Volume.Add(Nothing)
             market.PriceMax.Add(Nothing)
             market.PriceMin.Add(Nothing)
         Next
@@ -163,6 +168,11 @@ Public Class Binance
             market.Charts(n).Series(market.Name(n)).YValuesPerPoint = 4
             market.Charts(n).Series(market.Name(n)).ChartType = SeriesChartType.Candlestick
             market.Charts(n).Series(market.Name(n)).Sort(PointSortOrder.Ascending, "X")
+
+            market.Charts(n).Series.Add("Volume")
+            market.Charts(n).Series("Volume").XValueType = ChartValueType.DateTime
+            market.Charts(n).Series("Volume").YValuesPerPoint = 4
+            market.Charts(n).Series("Volume").Sort(PointSortOrder.Ascending, "X")
             For i As Integer = 0 To market.ind.Length - 1
                 market.Charts(n).Series.Add(market.ind(i))
                 market.Charts(n).Series(market.ind(i)).XValueType = ChartValueType.DateTime
@@ -279,7 +289,9 @@ Public Class Binance
                             market.Price(n) = trade_stream.Data(x).Close
                             market.PriceMax(n) = trade_stream.Data(x).High
                             market.PriceMin(n) = trade_stream.Data(x).Low
+                            market.Volume(n) = trade_stream.Data(x).Volume
                             market.Charts(n).Series(market.Name(n)).Points.AddXY(trade_stream.Data(x).CloseTime, trade_stream.Data(x).High, trade_stream.Data(x).Low, trade_stream.Data(x).Open, trade_stream.Data(x).Close)
+                            market.Charts(n).Series("Volume").Points.AddXY(trade_stream.Data(x).CloseTime, trade_stream.Data(x).Volume, trade_stream.Data(x).TakerBuyBaseAssetVolume, trade_stream.Data(x).TakerBuyQuoteAssetVolume, trade_stream.Data(x).QuoteAssetVolume)
                         Next
                         For i As Integer = 0 To market.ind.Length - 1
                             market.Charts(n).Series(market.ind(i)).Points.Clear()
@@ -289,7 +301,6 @@ Public Class Binance
                         FormulaSMA(n)
                         FormulaMACD(n)
                         FormulaWMA(n)
-                        ' FormulaHMA(n)
                         FormulaRSI(n)
                         FormulaCCI(n)
                         FormulaWILR(n)
@@ -358,7 +369,8 @@ Public Class Binance
     End Sub
     Private Sub FormulaWMA(ByRef n As Integer)
         Try
-            market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.WeightedMovingAverage, "20", market.Name(n) & ":Y4", "WMA")
+            market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.WeightedMovingAverage, "20", market.Name(n) & ":Y4", "WMA20")
+            market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.WeightedMovingAverage, "10", market.Name(n) & ":Y4", "WMA10")
         Catch ex As Exception
         End Try
     End Sub
@@ -368,16 +380,9 @@ Public Class Binance
         Catch ex As Exception
         End Try
     End Sub
-    Private Sub FormulaHMA(ByRef n As Integer)
-        Try               'HMA= WMA(2*WMA(n/2) − WMA(n)),sqrt(n))
-            market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, Math.Sqrt(9), "WMA", "HMA")
-        Catch ex As Exception
-        End Try
-
-    End Sub
     Private Sub FormulaMACD(ByRef n As Integer)
         Try
-            market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.MovingAverageConvergenceDivergence, "9,26", market.Name(n) & ":Y4", "MACD") '10,26
+            market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.MovingAverageConvergenceDivergence, "12,26", market.Name(n) & ":Y4", "MACD") '10,26
             market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, "9", "MACD", "MACD-EMA") '9
             '  MACDDIF = MACD - MACD-EMA
         Catch ex As Exception
@@ -419,6 +424,7 @@ Public Class Binance
         App.ListCharts.Columns.Add("Price", 100)
         App.ListCharts.Columns.Add("Higth", 100)
         App.ListCharts.Columns.Add("Low", 100)
+        App.ListCharts.Columns.Add("Volume", 100)
         For i As Integer = 0 To market.ind.Length - 1
             App.ListCharts.Columns.Add(market.ind(i), 100)
         Next
@@ -427,6 +433,7 @@ Public Class Binance
             App.ListCharts.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = market.Price(x)
             App.ListCharts.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = market.PriceMax(x)
             App.ListCharts.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = market.PriceMin(x)
+            App.ListCharts.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = market.Volume(x)
             For i As Integer = 0 To market.ind.Length - 1
                 If Not Nothing = indicator(x, market.ind(i)) Then
                     App.ListCharts.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = Math.Round(indicator(x, market.ind(i)), 8)
@@ -435,15 +442,14 @@ Public Class Binance
                 End If
             Next
             If p = False Then
-                ' Form1.ListCharts.Items(x).BackColor = Color.FromArgb(35, 35, 35)
                 p = True
             Else
                 App.ListCharts.Items(x).ForeColor = Color.Silver
-                ' Form1.ListCharts.Items(x).BackColor = Color.FromArgb(64, 64, 64)
                 p = False
             End If
         Next
         App.ListBalance.Items.Clear()
+        App.ListBalance.Columns.Item(4).Text = "Balance To " & My.Settings.Asset(0)
         For x As Integer = 0 To asset.Name.Count - 1
             App.ListBalance.Items.Add(asset.Name(x))
             App.ListBalance.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = asset.Bilancio(x)
@@ -467,10 +473,10 @@ Public Class Binance
                 App.ListCharts.Items(x).SubItems(1).Text = market.Price(x)
                 For i As Integer = 0 To market.ind.Length - 1
                     If Not Nothing = indicator(x, market.ind(i)) Then
-                        App.ListCharts.Items(x).SubItems(i + 4).Text = Math.Round(indicator(x, market.ind(i)), 8)
+                        App.ListCharts.Items(x).SubItems(i + 5).Text = Math.Round(indicator(x, market.ind(i)), 8)
                     Else
-                        If Not App.ListCharts.Items(x).SubItems(i + 4).Text = "nd" Then
-                            App.ListCharts.Items(x).SubItems(i + 4).Text = "nd"
+                        If Not App.ListCharts.Items(x).SubItems(i + 5).Text = "nd" Then
+                            App.ListCharts.Items(x).SubItems(i + 5).Text = "nd"
                         End If
                     End If
                 Next
@@ -481,8 +487,9 @@ Public Class Binance
             If Not App.ListCharts.Items(x).SubItems(3).Text = market.PriceMin(x) Then
                 App.ListCharts.Items(x).SubItems(3).Text = market.PriceMin(x)
             End If
-
-
+            If Not App.ListCharts.Items(x).SubItems(4).Text = market.Volume(x) Then
+                App.ListCharts.Items(x).SubItems(4).Text = market.Volume(x)
+            End If
         Next
 
         For x As Integer = 0 To asset.Name.Count - 1
@@ -520,9 +527,9 @@ Public Class Binance
             ElseIf indicator(n, "RSI") < 20 And indicator(n, "RSI") <> Nothing Then
                 priority(market.Base(n)) += 2
             End If
-            If (indicator(n, "MACD") - indicator(n, "MACD-EMA")) > 0 And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) > (indicator(n, "MACD", 1) - indicator(n, "MACD-EMA", 1)) And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) <> Nothing Then
+            If (indicator(n, "MACD") - indicator(n, "MACD-EMA")) > 0 And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) <> Nothing Then
                 priority(market.Base(n)) += 2
-            ElseIf (indicator(n, "MACD") - indicator(n, "MACD-EMA")) < 0 And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) < (indicator(n, "MACD", 1) - indicator(n, "MACD-EMA", 1)) And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) <> Nothing Then
+            ElseIf (indicator(n, "MACD") - indicator(n, "MACD-EMA")) < 0 And (indicator(n, "MACD") - indicator(n, "MACD-EMA")) <> Nothing Then
                 priority(market.Quote(n)) += 2
             End If
             If indicator(n, "W%R") > -80 And indicator(n, "W%R") <> Nothing Then
@@ -530,97 +537,27 @@ Public Class Binance
             ElseIf indicator(n, "W%R") < -20 And indicator(n, "W%R") <> Nothing Then
                 priority(market.Quote(n)) += 1
             End If
-            If indicator(n, "EMA5") < market.Price(n) And indicator(n, "EMA5") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "EMA5") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "EMA10") < market.Price(n) And indicator(n, "EMA10") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "EMA10") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "EMA20") < market.Price(n) And indicator(n, "EMA20") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "EMA20") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "EMA30") < market.Price(n) And indicator(n, "EMA30") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "EMA30") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "EMA50") < market.Price(n) And indicator(n, "EMA50") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "EMA50") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "EMA100") < market.Price(n) And indicator(n, "EMA100") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "EMA100") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "EMA200") < market.Price(n) And indicator(n, "EMA200") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "EMA200") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "SMA5") < market.Price(n) And indicator(n, "SMA5") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "SMA5") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "SMA10") < market.Price(n) And indicator(n, "SMA10") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "SMA10") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "SMA20") < market.Price(n) And indicator(n, "SMA20") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "SMA20") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "SMA30") < market.Price(n) And indicator(n, "SMA30") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "SMA30") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "SMA50") < market.Price(n) And indicator(n, "SMA50") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "SMA50") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "SMA100") < market.Price(n) And indicator(n, "SMA100") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "SMA100") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "SMA200") < market.Price(n) And indicator(n, "SMA200") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "SMA200") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
-            If indicator(n, "WMA") < market.Price(n) And indicator(n, "WMA") <> Nothing Then
-                priority(market.Base(n)) += 1
-            ElseIf indicator(n, "WMA") <> Nothing Then
-                priority(market.Quote(n)) += 1
-            End If
+            Dim ind As String() = {"EMA5", "EMA10", "EMA20", "EMA30", "EMA50", "EMA100", "EMA200", "SMA5", "SMA10", "SMA20", "SMA30", "SMA50", "SMA100", "SMA200", "WMA10", "WMA20"}
+            For x = 0 To ind.Length - 1
+                If indicator(n, ind(x)) < market.Price(n) And indicator(n, ind(x)) <> Nothing Then
+                    priority(market.Base(n)) += 1
+                ElseIf indicator(n, ind(x)) <> Nothing Then
+                    priority(market.Quote(n)) += 1
+                End If
+            Next
+
         Next
         PriorityTop()
-        For n As Integer = 0 To asset.Name.Count - 1
-            prioTot += priority(n)
-        Next
-        For n As Integer = 0 To asset.Name.Count - 1
-            If priority(n) < (prioTot * 1.1) / asset.Name.Count Then
-                priority(n) = 0
-            End If
-        Next
-
-        For n As Integer = 0 To asset.Name.Count - 1
-            priority(n) += priority(n) * priority(n) * asset.Split(n)
+        If My.Settings.ATO < topC.Length Then
+            For n = My.Settings.ATO To topC.Length - 1
+                priority(topC(n)) = 0
+            Next
+        End If
+        For n = 0 To priority.Length - 1
+            priority(n) = priority(n) ^ 2 * asset.Split(n)
         Next
 
-        prioTot = 0
+
         For n As Integer = 0 To asset.Name.Count - 1
             prioTot += priority(n)
         Next
@@ -632,7 +569,6 @@ Public Class Binance
             End If
         Next
     End Sub
-
     Private Sub PriorityTop()
         Dim l As Integer = priority.Length - 1
         ReDim topC(l)
@@ -678,7 +614,7 @@ Public Class Binance
                                 LBuy(n, 1)
                             Else
                                 CancellaOrdini(market.Name(n))
-                                MBuy(n, 10)
+                                ' MBuy(n, 10)
                                 LBuy(n, 2)
                             End If
                         End If
@@ -689,7 +625,7 @@ Public Class Binance
                                 LSell(n, 1)
                             Else
                                 CancellaOrdini(market.Name(n))
-                                MSell(n, 10)
+                                '  MSell(n, 10)
                                 LSell(n, 2)
                             End If
                         End If
@@ -741,69 +677,70 @@ Public Class Binance
         Return Mdecimal(p / c, market.MinPrice(s))
     End Function
     Private Sub LSell(ByVal n As Integer, Optional ByVal Div As Integer = 1)
-        Dim Volume As Decimal = Math.Round(asset.BilancioDisponibile(market.Base(n)) - asset.BILANCIOideale(market.Base(n)), 8)
+
         For x = Div To 10
-            If Volume / x > 0.005 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + ((Volume / x) * SellMed(n)) <= asset.BILANCIOideale(market.Quote(n)) Then
+            Dim Volume As Decimal = Mdecimal(asset.BilancioDisponibile(market.Base(n)) - asset.BILANCIOideale(market.Base(n)) / x, market.MinVolume(n))
+            If Volume > 0.005 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + (Volume * market.PriceMax(n)) <= asset.BILANCIOideale(market.Quote(n)) Then
                 Try
-                    Dim ordine = api.client.PlaceOrder(market.Name(n), OrderSide.Sell, OrderType.Limit, Mdecimal((Volume / x), market.MinVolume(n)), price:=SellMed(n), timeInForce:=TimeInForce.GoodTillCancel)
+                    Dim ordine = api.client.PlaceOrder(market.Name(n), OrderSide.Sell, OrderType.Limit, Volume, price:=market.PriceMax(n), timeInForce:=TimeInForce.GoodTillCancel)
                     Log("SELL Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId)
                     VerificaBilancio()
                     Exit For
                 Catch ex As Exception
-                    LogError(" ERROR SELL : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
+                    LogError(" ERROR SELL Limit : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                 End Try
-            ElseIf Volume / x < 0.005 / asset.ToBTC(market.Base(n)) Then
+            Else
                 Exit For
             End If
         Next
     End Sub
     Private Sub LBuy(ByVal n As Integer, Optional ByVal Div As Integer = 1)
-        Dim Volume As Decimal = Math.Round((asset.BilancioDisponibile(market.Quote(n)) - asset.BILANCIOideale(market.Quote(n))) / (market.PriceMin(n)), 8)
         For x = Div To 10
-            If Volume / x > 0.005 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n))) + (Volume / x) <= asset.BILANCIOideale(market.Base(n)) Then
+            Dim Volume As Decimal = Mdecimal(((asset.BilancioDisponibile(market.Quote(n)) - asset.BILANCIOideale(market.Quote(n))) / market.PriceMin(n)) / x, market.MinVolume(n))
+            If Volume > 0.005 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n))) + Volume <= asset.BILANCIOideale(market.Base(n)) Then
                 Try
-                    Dim ordine = api.client.PlaceOrder(market.Name(n), OrderSide.Buy, OrderType.Limit, Mdecimal((Volume / x), market.MinVolume(n)), price:=BuyMed(n), timeInForce:=TimeInForce.GoodTillCancel)
+                    Dim ordine = api.client.PlaceOrder(market.Name(n), OrderSide.Buy, OrderType.Limit, Volume, price:=market.PriceMin(n), timeInForce:=TimeInForce.GoodTillCancel)
                     Log("BUY Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId)
                     VerificaBilancio()
                     Exit For
                 Catch ex As Exception
                     LogError("ERROR BUY : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                 End Try
-            ElseIf Volume / x < 0.005 / asset.ToBTC(market.Base(n)) Then
+            Else
                 Exit For
             End If
         Next
     End Sub
     Private Sub MSell(ByVal n As Integer, Optional ByVal Div As Integer = 1)
-        Dim Volume As Decimal = Math.Round(asset.BilancioDisponibile(market.Base(n)) - asset.BILANCIOideale(market.Base(n)), 8)
         For x = Div To 10
-            If Volume / x > 0.1 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + ((Volume / x) * market.PriceMax(n)) <= asset.BILANCIOideale(market.Quote(n)) Then
+            Dim Volume As Decimal = Mdecimal(asset.BilancioDisponibile(market.Base(n)) - asset.BILANCIOideale(market.Base(n)) / x, market.MinVolume(n))
+            If Volume > 0.01 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + (Volume * market.PriceMax(n)) <= asset.BILANCIOideale(market.Quote(n)) Then
                 Try
-                    Dim ordine = api.client.PlaceOrder(market.Name(n), OrderSide.Sell, OrderType.Market, Mdecimal(Volume / x, market.MinVolume(n)))
+                    Dim ordine = api.client.PlaceOrder(market.Name(n), OrderSide.Sell, OrderType.Market, Volume, market.MinVolume(n))
                     Log("SELL Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & market.Price(n) & " ID : " & ordine.Data.OrderId)
                     VerificaBilancio()
                     Exit For
                 Catch ex As Exception
-                    LogError("ERROR SELL : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
+                    LogError("ERROR SELL Market : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                 End Try
-            ElseIf Volume / x < 0.005 / asset.ToBTC(market.Base(n)) Then
+            Else
                 Exit For
             End If
         Next
     End Sub
     Private Sub MBuy(ByVal n As Integer, Optional ByVal Div As Integer = 1)
-        Dim Volume As Decimal = Math.Round((asset.BilancioDisponibile(market.Quote(n)) - asset.BILANCIOideale(market.Quote(n))) / market.PriceMin(n), 8)
         For x = Div To 10
-            If Volume / x > 0.1 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n))) + (Volume / x) <= asset.BILANCIOideale(market.Base(n)) Then
+            Dim Volume As Decimal = Mdecimal(((asset.BilancioDisponibile(market.Quote(n)) - asset.BILANCIOideale(market.Quote(n))) / market.PriceMin(n)) / x, market.MinVolume(n))
+            If Volume > 0.01 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n))) + Volume <= asset.BILANCIOideale(market.Base(n)) Then
                 Try
-                    Dim ordine = api.client.PlaceOrder(market.Name(n), OrderSide.Buy, OrderType.Market, Mdecimal(Volume / x, market.MinVolume(n)))
+                    Dim ordine = api.client.PlaceOrder(market.Name(n), OrderSide.Buy, OrderType.Market, Volume)
                     Log("BUY Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.OriginalQuantity & " Price : " & market.Price(n) & " ID : " & ordine.Data.OrderId)
                     VerificaBilancio()
                     Exit For
                 Catch ex As Exception
                     LogError("ERROR BUY : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                 End Try
-            ElseIf Volume / x < 0.005 / asset.ToBTC(market.Base(n)) Then
+            Else
                 Exit For
             End If
         Next
@@ -811,7 +748,7 @@ Public Class Binance
     Private Function Mdecimal(ByVal vol As Decimal, ByVal v As Decimal) As Decimal
         Dim dec As Integer = 0
         Dim i As Decimal = 0.5
-        For x As Integer = 0 To 8
+        For x As Integer = 0 To 10
             If Not v < 1 Then
                 Exit For
             Else

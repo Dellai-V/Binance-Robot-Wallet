@@ -35,6 +35,9 @@ Partial Class App
         Me.ColumnHeader12 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Timer2 = New System.Windows.Forms.Timer(Me.components)
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
+        Me.ToolStripSplitButton1 = New System.Windows.Forms.ToolStripSplitButton()
+        Me.SettigAPIToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SettingBOTToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LabelTot = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LabelBuy = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LabelSell = New System.Windows.Forms.ToolStripStatusLabel()
@@ -47,8 +50,6 @@ Partial Class App
         Me.ColumnHeader5 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
-        Me.ToolStripSplitButton1 = New System.Windows.Forms.ToolStripSplitButton()
-        Me.SettigAPIToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -134,6 +135,29 @@ Partial Class App
         Me.StatusStrip1.TabIndex = 8
         Me.StatusStrip1.Text = "StatusStrip1"
         '
+        'ToolStripSplitButton1
+        '
+        Me.ToolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripSplitButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SettigAPIToolStripMenuItem, Me.SettingBOTToolStripMenuItem})
+        Me.ToolStripSplitButton1.Image = CType(resources.GetObject("ToolStripSplitButton1.Image"), System.Drawing.Image)
+        Me.ToolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripSplitButton1.Margin = New System.Windows.Forms.Padding(0, 2, 10, 0)
+        Me.ToolStripSplitButton1.Name = "ToolStripSplitButton1"
+        Me.ToolStripSplitButton1.Size = New System.Drawing.Size(32, 20)
+        Me.ToolStripSplitButton1.Text = "ToolStripSplitButton1"
+        '
+        'SettigAPIToolStripMenuItem
+        '
+        Me.SettigAPIToolStripMenuItem.Name = "SettigAPIToolStripMenuItem"
+        Me.SettigAPIToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
+        Me.SettigAPIToolStripMenuItem.Text = "Setting API"
+        '
+        'SettingBOTToolStripMenuItem
+        '
+        Me.SettingBOTToolStripMenuItem.Name = "SettingBOTToolStripMenuItem"
+        Me.SettingBOTToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
+        Me.SettingBOTToolStripMenuItem.Text = "Setting BOT"
+        '
         'LabelTot
         '
         Me.LabelTot.BackColor = System.Drawing.Color.Transparent
@@ -213,7 +237,7 @@ Partial Class App
         '
         'ColumnHeader4
         '
-        Me.ColumnHeader4.Text = "Balance Loked"
+        Me.ColumnHeader4.Text = "Balance Orders"
         Me.ColumnHeader4.Width = 170
         '
         'ColumnHeader5
@@ -239,23 +263,6 @@ Partial Class App
         Me.CheckBox1.TabIndex = 12
         Me.CheckBox1.Text = "Active Trade"
         Me.CheckBox1.UseVisualStyleBackColor = False
-        '
-        'ToolStripSplitButton1
-        '
-        Me.ToolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripSplitButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SettigAPIToolStripMenuItem})
-        Me.ToolStripSplitButton1.Image = CType(resources.GetObject("ToolStripSplitButton1.Image"), System.Drawing.Image)
-        Me.ToolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripSplitButton1.Margin = New System.Windows.Forms.Padding(0, 2, 10, 0)
-        Me.ToolStripSplitButton1.Name = "ToolStripSplitButton1"
-        Me.ToolStripSplitButton1.Size = New System.Drawing.Size(32, 20)
-        Me.ToolStripSplitButton1.Text = "ToolStripSplitButton1"
-        '
-        'SettigAPIToolStripMenuItem
-        '
-        Me.SettigAPIToolStripMenuItem.Name = "SettigAPIToolStripMenuItem"
-        Me.SettigAPIToolStripMenuItem.Size = New System.Drawing.Size(125, 22)
-        Me.SettigAPIToolStripMenuItem.Text = "Settig API"
         '
         'App
         '
@@ -304,4 +311,5 @@ Partial Class App
     Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents ToolStripSplitButton1 As ToolStripSplitButton
     Friend WithEvents SettigAPIToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SettingBOTToolStripMenuItem As ToolStripMenuItem
 End Class
