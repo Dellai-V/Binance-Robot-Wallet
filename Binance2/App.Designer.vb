@@ -49,6 +49,7 @@ Partial Class App
         Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader5 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -65,7 +66,7 @@ Partial Class App
         Me.ListCharts.HideSelection = False
         Me.ListCharts.Location = New System.Drawing.Point(0, 0)
         Me.ListCharts.Name = "ListCharts"
-        Me.ListCharts.Size = New System.Drawing.Size(784, 272)
+        Me.ListCharts.Size = New System.Drawing.Size(782, 272)
         Me.ListCharts.TabIndex = 2
         Me.ListCharts.UseCompatibleStateImageBehavior = False
         Me.ListCharts.View = System.Windows.Forms.View.Details
@@ -86,7 +87,7 @@ Partial Class App
         Me.ListOrder.HideSelection = False
         Me.ListOrder.Location = New System.Drawing.Point(0, 272)
         Me.ListOrder.Name = "ListOrder"
-        Me.ListOrder.Size = New System.Drawing.Size(784, 154)
+        Me.ListOrder.Size = New System.Drawing.Size(782, 154)
         Me.ListOrder.TabIndex = 7
         Me.ListOrder.UseCompatibleStateImageBehavior = False
         Me.ListOrder.View = System.Windows.Forms.View.Details
@@ -131,7 +132,7 @@ Partial Class App
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripSplitButton1, Me.LabelTot, Me.LabelBuy, Me.LabelSell})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 739)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(784, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(782, 22)
         Me.StatusStrip1.TabIndex = 8
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -199,7 +200,7 @@ Partial Class App
         Me.Log.ForeColor = System.Drawing.Color.White
         Me.Log.Location = New System.Drawing.Point(0, 581)
         Me.Log.Name = "Log"
-        Me.Log.Size = New System.Drawing.Size(784, 158)
+        Me.Log.Size = New System.Drawing.Size(782, 158)
         Me.Log.TabIndex = 10
         Me.Log.Text = ""
         '
@@ -215,7 +216,8 @@ Partial Class App
         Me.ListBalance.HideSelection = False
         Me.ListBalance.Location = New System.Drawing.Point(0, 432)
         Me.ListBalance.Name = "ListBalance"
-        Me.ListBalance.Size = New System.Drawing.Size(784, 149)
+        Me.ListBalance.Size = New System.Drawing.Size(782, 149)
+        Me.ListBalance.SmallImageList = Me.ImageList1
         Me.ListBalance.TabIndex = 11
         Me.ListBalance.UseCompatibleStateImageBehavior = False
         Me.ListBalance.View = System.Windows.Forms.View.Details
@@ -250,6 +252,33 @@ Partial Class App
         Me.ColumnHeader6.Text = "Ideal"
         Me.ColumnHeader6.Width = 100
         '
+        'ImageList1
+        '
+        Me.ImageList1.ImageStream = CType(resources.GetObject("ImageList1.ImageStream"), System.Windows.Forms.ImageListStreamer)
+        Me.ImageList1.TransparentColor = System.Drawing.Color.Transparent
+        Me.ImageList1.Images.SetKeyName(0, "ADA.png")
+        Me.ImageList1.Images.SetKeyName(1, "ATOM.png")
+        Me.ImageList1.Images.SetKeyName(2, "BCH.png")
+        Me.ImageList1.Images.SetKeyName(3, "BCHSV.png")
+        Me.ImageList1.Images.SetKeyName(4, "BNB.png")
+        Me.ImageList1.Images.SetKeyName(5, "BTC.png")
+        Me.ImageList1.Images.SetKeyName(6, "DASH.png")
+        Me.ImageList1.Images.SetKeyName(7, "ETC.png")
+        Me.ImageList1.Images.SetKeyName(8, "ETH.png")
+        Me.ImageList1.Images.SetKeyName(9, "IOTA.png")
+        Me.ImageList1.Images.SetKeyName(10, "LINK.png")
+        Me.ImageList1.Images.SetKeyName(11, "LTC.png")
+        Me.ImageList1.Images.SetKeyName(12, "NEO.png")
+        Me.ImageList1.Images.SetKeyName(13, "TRX.jpg")
+        Me.ImageList1.Images.SetKeyName(14, "USDC.png")
+        Me.ImageList1.Images.SetKeyName(15, "USDT.png")
+        Me.ImageList1.Images.SetKeyName(16, "VET.png")
+        Me.ImageList1.Images.SetKeyName(17, "XLM.png")
+        Me.ImageList1.Images.SetKeyName(18, "XMR.png")
+        Me.ImageList1.Images.SetKeyName(19, "XRP.png")
+        Me.ImageList1.Images.SetKeyName(20, "XTZ.png")
+        Me.ImageList1.Images.SetKeyName(21, "ZEC.png")
+        '
         'CheckBox1
         '
         Me.CheckBox1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -257,7 +286,7 @@ Partial Class App
         Me.CheckBox1.BackColor = System.Drawing.Color.White
         Me.CheckBox1.Font = New System.Drawing.Font("Consolas", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CheckBox1.ForeColor = System.Drawing.Color.Black
-        Me.CheckBox1.Location = New System.Drawing.Point(639, 741)
+        Me.CheckBox1.Location = New System.Drawing.Point(637, 741)
         Me.CheckBox1.Name = "CheckBox1"
         Me.CheckBox1.Size = New System.Drawing.Size(110, 19)
         Me.CheckBox1.TabIndex = 12
@@ -269,7 +298,7 @@ Partial Class App
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(784, 761)
+        Me.ClientSize = New System.Drawing.Size(782, 761)
         Me.Controls.Add(Me.CheckBox1)
         Me.Controls.Add(Me.ListBalance)
         Me.Controls.Add(Me.Log)
@@ -312,4 +341,5 @@ Partial Class App
     Friend WithEvents ToolStripSplitButton1 As ToolStripSplitButton
     Friend WithEvents SettigAPIToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SettingBOTToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ImageList1 As ImageList
 End Class
