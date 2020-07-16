@@ -645,10 +645,9 @@ Public Class Binance
         End If
     End Function
     Private Sub LSell(ByVal n As Integer, Optional ByVal Div As Integer = 1)
-
-        For x = Div To 10
-            Dim Volume As Decimal = Mdecimal(asset.BilancioDisponibile(market.Base(n)) - asset.BILANCIOideale(market.Base(n)) / x, market.MinVolume(n))
-            If Volume > 0.005 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + (Volume * SellMed(n)) <= asset.BILANCIOideale(market.Quote(n)) Then
+        For x = Div To 100
+            Dim Volume As Decimal = Mdecimal((asset.BilancioOrdini(market.Base(n)) + asset.BilancioDisponibile(market.Base(n)) - asset.BILANCIOideale(market.Base(n))) / x, market.MinVolume(n))
+            If Volume > 0.05 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + (Volume * market.Price(n)) <= asset.BILANCIOideale(market.Quote(n)) Then
                 Try
                     Dim ordine = api.client.PlaceOrder(market.Name(n), Enums.OrderSide.Sell, Enums.OrderType.Limit, Volume, price:=SellMed(n), timeInForce:=Enums.TimeInForce.GoodTillCancel)
                     Log("SELL Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.Quantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId)
@@ -657,15 +656,13 @@ Public Class Binance
                 Catch ex As Exception
                     LogError(" ERROR SELL Limit : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                 End Try
-            Else
-                Exit For
             End If
         Next
     End Sub
     Private Sub LBuy(ByVal n As Integer, Optional ByVal Div As Integer = 1)
-        For x = Div To 10
-            Dim Volume As Decimal = Mdecimal(((asset.BilancioDisponibile(market.Quote(n)) - asset.BILANCIOideale(market.Quote(n))) / market.PriceMin(n)) / x, BuyMed(n))
-            If Volume > 0.005 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n))) + Volume <= asset.BILANCIOideale(market.Base(n)) Then
+        For x = Div To 100
+            Dim Volume As Decimal = Mdecimal((asset.BILANCIOideale(market.Base(n)) - asset.BilancioDisponibile(market.Base(n)) - asset.BilancioOrdini(market.Base(n))) / x, market.MinVolume(n))
+            If Volume > 0.05 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) - (Volume * market.Price(n)) >= asset.BILANCIOideale(market.Quote(n)) Then
                 Try
                     Dim ordine = api.client.PlaceOrder(market.Name(n), Enums.OrderSide.Buy, Enums.OrderType.Limit, Volume, price:=BuyMed(n), timeInForce:=Enums.TimeInForce.GoodTillCancel)
                     Log("BUY Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.Quantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId)
@@ -674,15 +671,13 @@ Public Class Binance
                 Catch ex As Exception
                     LogError("ERROR BUY : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                 End Try
-            Else
-                Exit For
             End If
         Next
     End Sub
-    Private Sub MSell(ByVal n As Integer, Optional ByVal Div As Integer = 1)
-        For x = Div To 10
-            Dim Volume As Decimal = Mdecimal(asset.BilancioDisponibile(market.Base(n)) - asset.BILANCIOideale(market.Base(n)) / x, market.MinVolume(n))
-            If Volume > 0.01 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + (Volume * market.PriceMax(n)) <= asset.BILANCIOideale(market.Quote(n)) Then
+    Private Sub MSell(ByVal n As Integer, Optional ByVal Div As Integer = 1) 'base >to> quote
+        For x = Div To 100
+            Dim Volume As Decimal = Mdecimal((asset.BilancioOrdini(market.Base(n)) + asset.BilancioDisponibile(market.Base(n)) - asset.BILANCIOideale(market.Base(n))) / x, market.MinVolume(n))
+            If Volume > 0.05 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + (Volume * market.Price(n)) <= asset.BILANCIOideale(market.Quote(n)) Then
                 Try
                     Dim ordine = api.client.PlaceOrder(market.Name(n), Enums.OrderSide.Sell, Enums.OrderType.Market, Volume, market.MinVolume(n))
                     Log("SELL Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.Quantity & " Price : " & market.Price(n) & " ID : " & ordine.Data.OrderId)
@@ -691,15 +686,13 @@ Public Class Binance
                 Catch ex As Exception
                     LogError("ERROR SELL Market : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                 End Try
-            Else
-                Exit For
             End If
         Next
     End Sub
-    Private Sub MBuy(ByVal n As Integer, Optional ByVal Div As Integer = 1)
-        For x = Div To 10
-            Dim Volume As Decimal = Mdecimal(((asset.BilancioDisponibile(market.Quote(n)) - asset.BILANCIOideale(market.Quote(n))) / market.PriceMin(n)) / x, market.MinVolume(n))
-            If Volume > 0.01 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n))) + Volume <= asset.BILANCIOideale(market.Base(n)) Then
+    Private Sub MBuy(ByVal n As Integer, Optional ByVal Div As Integer = 1) 'quote >to> base     Base/quote
+        For x = Div To 100
+            Dim Volume As Decimal = Mdecimal((asset.BILANCIOideale(market.Base(n)) - asset.BilancioDisponibile(market.Base(n)) - asset.BilancioOrdini(market.Base(n))) / x, market.MinVolume(n))
+            If Volume > 0.05 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) - (Volume * market.Price(n)) >= asset.BILANCIOideale(market.Quote(n)) Then
                 Try
                     Dim ordine = api.client.PlaceOrder(market.Name(n), Enums.OrderSide.Buy, Enums.OrderType.Market, Volume)
                     Log("BUY Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.Quantity & " Price : " & market.Price(n) & " ID : " & ordine.Data.OrderId)
@@ -709,7 +702,6 @@ Public Class Binance
                     LogError("ERROR BUY : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                 End Try
             Else
-                Exit For
             End If
         Next
     End Sub
