@@ -3,10 +3,10 @@
   <PropertyGroup>
     <PublishUrlHistory>C:\Users\yeio\OneDrive\Desktop\|publish\</PublishUrlHistory>
     <InstallUrlHistory />
-    <SupportUrlHistory />
-    <UpdateUrlHistory />
+    <SupportUrlHistory>https://github.com/Dellai-V/Binance-Robot-Wallet</SupportUrlHistory>
+    <UpdateUrlHistory>https://github.com/Dellai-V/Binance-Robot-Wallet/releases/</UpdateUrlHistory>
     <BootstrapperUrlHistory />
-    <ErrorReportUrlHistory />
+    <ErrorReportUrlHistory>https://github.com/Dellai-V/Binance-Robot-Wallet/issues</ErrorReportUrlHistory>
     <FallbackCulture>it-IT</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>

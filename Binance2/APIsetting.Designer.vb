@@ -115,7 +115,9 @@ Partial Class APIsetting
         Me.MinimizeBox = False
         Me.Name = "APIsetting"
         Me.ShowIcon = False
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Setting API"
+        Me.TopMost = True
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

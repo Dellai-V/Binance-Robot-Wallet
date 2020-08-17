@@ -26,9 +26,15 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <UpdateUrl>https://github.com/Dellai-V/Binance-Robot-Wallet/releases/</UpdateUrl>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>2.0.0.%2a</ApplicationVersion>
+    <SupportUrl>https://github.com/Dellai-V/Binance-Robot-Wallet</SupportUrl>
+    <ErrorReportUrl>https://github.com/Dellai-V/Binance-Robot-Wallet/issues</ErrorReportUrl>
+    <ProductName>Binance-Robot-Wallet</ProductName>
+    <PublisherName>Dellai</PublisherName>
+    <SuiteName>Dellai</SuiteName>
+    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationVersion>2.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
