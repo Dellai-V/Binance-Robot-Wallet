@@ -48,7 +48,7 @@ This code is for educational purposes only, and is totally free.
 
 - Press the "Add / Edit Asset" button (*4) to add or edit an asset (*2) with the split (*3) consideration you wish to have. The assets used will be listed in the list (*1), to remove them just select them in the list and click on the "Remove" button (*5).
 
-> For correct operation, when adding a new asset, it must have the corresponding market with all the other currencies, otherwise the bot will not make a correct forecast.
+> The bot can emulate a market, marking it with the abbreviation "emu". this type of market does not really exist, but is created for proper analysis.
 
 - To save the changes click on "Save". The configurations are saved in the "Binance.exe.config" file in the xml format.
 
