@@ -17,10 +17,8 @@ Public Class App
         Timer1.Stop()
         If Binance.OHLCDone = True Then
             Binance.OHLC()
-            Binance.ReadingIndicator()
-
+            Binance.EmuChart()
             Binance.CalcoloBTC()
-            Binance.UpdateListView()
         End If
         Timer1.Start()
     End Sub
@@ -28,6 +26,7 @@ Public Class App
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
         Timer2.Stop()
         If CheckBox1.Checked = True Then
+            Binance.CancellaOrdini()
             Binance.VerificaBilancio()
             Binance.StartTrade()
         End If
@@ -35,6 +34,9 @@ Public Class App
 
     End Sub
 
+    Private Sub Timer3_Tick(sender As Object, e As EventArgs) Handles Timer3.Tick
+        Binance.UpdateListView()
+    End Sub
     Private Sub SettigAPIToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SettigAPIToolStripMenuItem.Click
         APIsetting.Show()
     End Sub

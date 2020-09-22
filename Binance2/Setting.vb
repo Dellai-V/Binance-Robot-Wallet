@@ -1,6 +1,5 @@
 ﻿Public Class Setting
     Private Sub Setting_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        App.CheckBox1.Checked = False
         NumericChart.Value = My.Settings.Ctimer
         NumericTrade.Value = My.Settings.UPtimer
         ComboPeriod.SelectedItem = My.Settings.period
@@ -10,7 +9,6 @@
             ListView1.Items.Add(My.Settings.Asset(x))
             ListView1.Items(x).SubItems.Add(New ListViewItem.ListViewSubItem).Text = My.Settings.Split(x)
         Next
-        App.Timer1.Stop()
     End Sub
     Private Sub ListView1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView1.SelectedIndexChanged
         If ListView1.SelectedItems.Count = 1 Then
@@ -54,9 +52,6 @@
         NumericAssetOwn.Maximum = ListView1.Items.Count
     End Sub
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-
-
-
         My.Settings.Ctimer = NumericChart.Value
         My.Settings.UPtimer = NumericTrade.Value
         My.Settings.period = ComboPeriod.SelectedItem
@@ -68,6 +63,10 @@
             My.Settings.Split.Add(ListView1.Items(x).SubItems(1).Text)
         Next
         Binance.LoadVar()
+        App.Timer2.Stop()
+        App.Timer1.Interval = My.Settings.Ctimer * 1000
+        App.Timer2.Interval = My.Settings.UPtimer * 60000
+        App.Timer2.Start()
         Me.Close()
     End Sub
 End Class

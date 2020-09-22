@@ -51,6 +51,7 @@ Partial Class App
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
+        Me.Timer3 = New System.Windows.Forms.Timer(Me.components)
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -64,7 +65,9 @@ Partial Class App
         Me.ListCharts.Font = New System.Drawing.Font("Consolas", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListCharts.ForeColor = System.Drawing.Color.White
         Me.ListCharts.HideSelection = False
+        Me.ListCharts.LabelWrap = False
         Me.ListCharts.Location = New System.Drawing.Point(0, 0)
+        Me.ListCharts.MultiSelect = False
         Me.ListCharts.Name = "ListCharts"
         Me.ListCharts.Size = New System.Drawing.Size(782, 272)
         Me.ListCharts.TabIndex = 2
@@ -85,7 +88,9 @@ Partial Class App
         Me.ListOrder.Font = New System.Drawing.Font("Consolas", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListOrder.ForeColor = System.Drawing.Color.White
         Me.ListOrder.HideSelection = False
+        Me.ListOrder.LabelWrap = False
         Me.ListOrder.Location = New System.Drawing.Point(0, 272)
+        Me.ListOrder.MultiSelect = False
         Me.ListOrder.Name = "ListOrder"
         Me.ListOrder.Size = New System.Drawing.Size(782, 154)
         Me.ListOrder.TabIndex = 7
@@ -214,7 +219,9 @@ Partial Class App
         Me.ListBalance.Font = New System.Drawing.Font("Consolas", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListBalance.ForeColor = System.Drawing.Color.White
         Me.ListBalance.HideSelection = False
+        Me.ListBalance.LabelWrap = False
         Me.ListBalance.Location = New System.Drawing.Point(0, 432)
+        Me.ListBalance.MultiSelect = False
         Me.ListBalance.Name = "ListBalance"
         Me.ListBalance.Size = New System.Drawing.Size(782, 149)
         Me.ListBalance.SmallImageList = Me.ImageList1
@@ -293,6 +300,11 @@ Partial Class App
         Me.CheckBox1.Text = "Active Trade"
         Me.CheckBox1.UseVisualStyleBackColor = False
         '
+        'Timer3
+        '
+        Me.Timer3.Enabled = True
+        Me.Timer3.Interval = 1000
+        '
         'App
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -342,4 +354,5 @@ Partial Class App
     Friend WithEvents SettigAPIToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SettingBOTToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImageList1 As ImageList
+    Friend WithEvents Timer3 As Timer
 End Class
