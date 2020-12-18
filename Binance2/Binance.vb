@@ -6,7 +6,7 @@ Public Class MARKET
     Public Quote As New List(Of Integer)
     Public MinPrice As New List(Of Decimal)
     Public MinVolume As New List(Of Decimal)
-    Public MaxVolume As New List(Of Decimal)
+    Public MinNotional As New List(Of Decimal)
 
     Public Last As New List(Of Date)
     Public Volume As New List(Of Decimal)
@@ -19,7 +19,7 @@ Public Class MARKET
     Public Periodo As String
     Public Charts() As Chart
 
-    Public ind() As String = {"EMA130", "EMA400", "E1", "E2", "SMAH5", "SMAL5", "EMA5", "EMA10", "EMA20", "EMA30", "EMA50", "EMA100", "EMA200", "SMA5", "SMA10", "SMA20", "SMA30", "SMA50", "SMA100", "SMA200", "MACD", "MACD-EMA", "WMA10", "WMA20", "RSI", "CCI", "W%R"}
+    Public ind() As String = {"SMAH5", "SMAL5", "EMA5", "EMA10", "EMA20", "EMA30", "EMA50", "EMA100", "EMA200", "SMA5", "SMA10", "SMA20", "SMA30", "SMA50", "SMA100", "SMA200", "MACD", "MACD-EMA", "WMA10", "WMA20", "RSI", "CCI", "W%R"}
 End Class
 Public Class ASSET
     Public Name As New List(Of String)
@@ -90,7 +90,7 @@ Public Class Binance
         market.Last.Clear()
         market.Volume.Clear()
         market.Price.Clear()
-        market.MaxVolume.Clear()
+        market.MinNotional.Clear()
         market.PriceMin.Clear()
         market.PriceMax.Clear()
         market.EMU.Clear()
@@ -119,10 +119,10 @@ Public Class Binance
                         market.Quote.Add(y)
                     End If
                 Next
-                market.MinPrice.Add(api.info.Data.Symbols(x).PriceFilter.MinPrice)
+                market.MinNotional.Add(api.info.Data.Symbols(x).MinNotionalFilter.MinNotional)
                 market.MinVolume.Add(api.info.Data.Symbols(x).LotSizeFilter.MinQuantity)
-                market.MaxVolume.Add(api.info.Data.Symbols(x).LotSizeFilter.MaxQuantity)
-                Log("ADD Market : " & api.info.Data.Symbols(x).Name & "  |  Min Trade : " & api.info.Data.Symbols(x).LotSizeFilter.MinQuantity & " " & api.info.Data.Symbols(x).BaseAsset & " |  Min Price : " & api.info.Data.Symbols(x).PriceFilter.MinPrice & " " & api.info.Data.Symbols(x).BaseAsset)
+                market.MinPrice.Add(api.info.Data.Symbols(x).PriceFilter.MinPrice)
+                Log("ADD Market : " & api.info.Data.Symbols(x).Name & "  |  Min Trade : " & api.info.Data.Symbols(x).LotSizeFilter.MinQuantity & " " & api.info.Data.Symbols(x).BaseAsset & " |  Min Price : " & api.info.Data.Symbols(x).MinNotionalFilter.MinNotional & " " & api.info.Data.Symbols(x).QuoteAsset)
             End If
             If Not asset.List.Contains(api.info.Data.Symbols(x).BaseAsset) Then
                 asset.List.Add(api.info.Data.Symbols(x).BaseAsset)
@@ -314,9 +314,7 @@ Public Class Binance
     End Sub
 #End Region
 #Region "CHARTS"
-    Public OHLCDone As Boolean = False
     Public Async Sub OHLC() 'Aggiorna grafici
-        OHLCDone = False
         For n As Integer = 0 To market.Charts.Length - 1
             If market.EMU(n) = False Then
                 Try
@@ -351,7 +349,6 @@ Public Class Binance
                     FormulaRSI(n)
                     FormulaCCI(n)
                     FormulaWILR(n)
-                    Formula(n)
                 Catch ex As Exception
                     LogError("ERROR CHART " & market.Name(n) & " : " & ex.Message)
                     market.Last(n) = Nothing
@@ -359,7 +356,6 @@ Public Class Binance
                 End Try
             End If
         Next
-        OHLCDone = True
     End Sub
 
     Public Sub EmuChart()
@@ -390,7 +386,6 @@ Public Class Binance
                 FormulaRSI(c)
                 FormulaCCI(c)
                 FormulaWILR(c)
-                Formula(c)
             End If
         Next
     End Sub
@@ -513,23 +508,6 @@ Public Class Binance
 
             market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "5", market.Name(n) & ":Y1", "SMAH5") 'High
             market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, "5", market.Name(n) & ":Y2", "SMAL5") 'Low
-        Catch ex As Exception
-        End Try
-    End Sub
-    Public Sub Formula(ByRef n As Integer)
-        Try
-            market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, "130", market.Name(n) & ":Y4", "EMA130")
-            market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, "400", market.Name(n) & ":Y4", "EMA400")
-            '   market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, "200", market.Name(n) & ":Y4", "EMA200")
-
-            Dim SLP1 As Double = (indicator(n, "EMA130") - indicator(n, "EMA130", 1)) / indicator(n, "EMA130")
-            Dim SLP2 As Double = (indicator(n, "EMA400") - indicator(n, "EMA400", 1)) / indicator(n, "EMA400")
-
-            market.Charts(n).Series("slp1").Points.AddXY(DateTime.UtcNow.ToUniversalTime, SLP1)
-            market.Charts(n).Series("slp2").Points.AddXY(DateTime.UtcNow.ToUniversalTime, SLP2)
-
-            market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, "3", "slp1", "E1")
-            market.Charts(n).DataManipulator.FinancialFormula(FinancialFormula.ExponentialMovingAverage, "3", "slp2", "E2")
         Catch ex As Exception
         End Try
     End Sub
@@ -737,30 +715,27 @@ Public Class Binance
         If api.stato = True And IdealOK = True Then
             For n As Integer = 0 To market.Name.Count - 1
                 If Not market.EMU(n) = True Then
-
-                    'https://tradingview.com/script/XBgfW9k9/
-                    Dim TrendCondition As Boolean = False ' True = Long |||  False = Short
-                    If market.Price(n) > indicator(n, "EMA200") Then
-                        TrendCondition = True
+                    If indicator(n, "SMAL5") > market.Price(n) Then
+                        MBuy(n, 6)
+                    Else
+                        LBuy(n, 6)
+                        If market.Base(n) = topC(0) And market.Quote(n) = topC(topC.Length - 1) Then
+                            MBuy(n, 20)
+                        ElseIf market.Base(n) = topC(1) And market.Quote(n) = topC(topC.Length - 1) Then
+                            MBuy(n, 40)
+                        End If
                     End If
-
-                    Dim VolatilityCondition As Boolean = False
-                    If Math.Abs(indicator(n, "E1") - indicator(n, "E2")) > 0.0003 Then
-                        VolatilityCondition = True
+                    If indicator(n, "SMAH5") < market.Price(n) Then
+                        MSell(n, 6)
+                    Else
+                        LSell(n, 6)
+                        If market.Base(n) = topC(topC.Length - 1) And market.Quote(n) = topC(0) Then
+                            MSell(n, 20)
+                        ElseIf market.Base(n) = topC(topC.Length - 1) And market.Quote(n) = topC(1) Then
+                            MSell(n, 40)
+                        End If
                     End If
-
-                    If TrendCondition = True And VolatilityCondition = True And indicator(n, "E1") > indicator(n, "E2") Then
-                        MBuy(n, 2)
-                    ElseIf indicator(n, "E1") > indicator(n, "E2") Then
-                        LBuy(n, 4)
                     End If
-
-                    If TrendCondition = False And VolatilityCondition = True And indicator(n, "E1") < indicator(n, "E2") Then
-                        MSell(n, 2)
-                    ElseIf indicator(n, "E1") < indicator(n, "E2") Then
-                        LSell(n, 4)
-                    End If
-                End If
             Next
         End If
     End Sub
@@ -794,11 +769,11 @@ Public Class Binance
         End If
     End Function
     Private Sub LSell(ByVal n As Integer, Optional ByVal Div As Integer = 1)
-        For x = Div To 100
-            Dim Volume As Decimal = Mdecimal((asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n)) - asset.BILANCIOidealeSMA(market.Base(n))) / x, market.MinVolume(n))
-            If Volume > 0.01 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + (Volume * market.Price(n)) <= asset.BILANCIOidealeSMA(market.Quote(n)) And asset.BilancioDisponibile(market.Base(n)) - Volume > 0 Then
+        For x = 1 To 1000
+            Dim Volume As Decimal = Mdecimal((asset.BTCtot * asset.ToBTC(market.Base(n))) / (Div * x), market.MinVolume(n))
+            If Volume > market.MinNotional(n) / market.Price(n) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + (Volume * market.Price(n)) <= asset.BILANCIOidealeSMA(market.Quote(n)) And asset.BilancioDisponibile(market.Base(n)) - Volume >= asset.BILANCIOidealeSMA(market.Base(n)) Then
                 Try
-                    Dim ordine = api.client.Spot.Order.PlaceOrder(market.Name(n), Enums.OrderSide.Sell, Enums.OrderType.Limit, Volume, price:=SellMed(n), timeInForce:=Enums.TimeInForce.GoodTillCancel)
+                    Dim ordine = api.client.Spot.Order.PlaceOrder(market.Name(n), Enums.OrderSide.Sell, Enums.OrderType.Limit, Mdecimal(Volume, market.MinVolume(n)), price:=SellMed(n), timeInForce:=Enums.TimeInForce.GoodTillCancel)
                     Log("SELL Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.Quantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId)
                     VerificaBilancio()
                     Exit For
@@ -806,15 +781,17 @@ Public Class Binance
                     LogError("ERROR SELL Limit : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                     Exit For
                 End Try
+            ElseIf asset.BilancioDisponibile(market.Base(n)) - Volume >= asset.BILANCIOidealeSMA(market.Base(n)) Then
+                Exit For
             End If
         Next
     End Sub
     Private Sub LBuy(ByVal n As Integer, Optional ByVal Div As Integer = 1)
-        For x = Div To 100
-            Dim Volume As Decimal = Mdecimal((asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n)) - asset.BILANCIOidealeSMA(market.Quote(n))) / x, market.MinVolume(n))
-            If Volume / market.Price(n) > 0.001 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n))) + (Volume / market.Price(n)) <= asset.BILANCIOidealeSMA(market.Base(n)) And asset.BilancioDisponibile(market.Quote(n)) - Volume > 0 Then
+        For x = 1 To 1000
+            Dim Volume As Decimal = Mdecimal((asset.BTCtot / asset.ToBTC(market.Base(n))) / (Div * x), market.MinVolume(n))
+            If Volume > market.MinNotional(n) / market.Price(n) And (asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n))) + Volume <= asset.BILANCIOidealeSMA(market.Base(n)) And asset.BilancioDisponibile(market.Quote(n)) - (Volume * market.Price(n)) >= asset.BILANCIOidealeSMA(market.Quote(n)) Then
                 Try
-                    Dim ordine = api.client.Spot.Order.PlaceOrder(market.Name(n), Enums.OrderSide.Buy, Enums.OrderType.Limit, Mdecimal(Volume / market.PriceMax(n), market.MinVolume(n)), price:=BuyMed(n), timeInForce:=Enums.TimeInForce.GoodTillCancel)
+                    Dim ordine = api.client.Spot.Order.PlaceOrder(market.Name(n), Enums.OrderSide.Buy, Enums.OrderType.Limit, Mdecimal(Volume, market.MinVolume(n)), price:=BuyMed(n), timeInForce:=Enums.TimeInForce.GoodTillCancel)
                     Log("BUY Limit : " & ordine.Data.Symbol & " Volume : " & ordine.Data.Quantity & " Price : " & ordine.Data.Price & " ID : " & ordine.Data.OrderId)
                     VerificaBilancio()
                     Exit For
@@ -822,15 +799,17 @@ Public Class Binance
                     LogError("ERROR BUY Limit : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                     Exit For
                 End Try
+            ElseIf asset.BilancioDisponibile(market.Quote(n)) - (Volume * market.Price(n)) < asset.BILANCIOidealeSMA(market.Quote(n)) Then
+                Exit For
             End If
         Next
     End Sub
     Private Sub MSell(ByVal n As Integer, Optional ByVal Div As Integer = 1) 'base >to> quote
-        For x = Div To 100
-            Dim Volume As Decimal = Mdecimal((asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n)) - asset.BILANCIOidealeSMA(market.Base(n))) / x, market.MinVolume(n))
-            If Volume > 0.001 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + (Volume * market.Price(n)) <= asset.BILANCIOidealeSMA(market.Quote(n)) And asset.BilancioDisponibile(market.Base(n)) - Volume > 0 Then
+        For x = 1 To 1000
+            Dim Volume As Decimal = Mdecimal((asset.BTCtot / asset.ToBTC(market.Base(n))) / (Div * x), market.MinVolume(n))
+            If Volume > market.MinNotional(n) / market.Price(n) And (asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n))) + (Volume * market.Price(n)) <= asset.BILANCIOidealeSMA(market.Quote(n)) And asset.BilancioDisponibile(market.Base(n)) - Volume >= asset.BILANCIOidealeSMA(market.Base(n)) Then
                 Try
-                    Dim ordine = api.client.Spot.Order.PlaceOrder(market.Name(n), Enums.OrderSide.Sell, Enums.OrderType.Market, Volume)
+                    Dim ordine = api.client.Spot.Order.PlaceOrder(market.Name(n), Enums.OrderSide.Sell, Enums.OrderType.Market, Mdecimal(Volume, market.MinVolume(n)))
                     Log("SELL Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.Quantity & " Price : " & market.Price(n) & " ID : " & ordine.Data.OrderId)
                     VerificaBilancio()
                     Exit For
@@ -838,15 +817,17 @@ Public Class Binance
                     LogError("ERROR SELL Market : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                     Exit For
                 End Try
+            ElseIf asset.BilancioDisponibile(market.Base(n)) - Volume >= asset.BILANCIOidealeSMA(market.Base(n)) Then
+                Exit For
             End If
         Next
     End Sub
     Private Sub MBuy(ByVal n As Integer, Optional ByVal Div As Integer = 1) 'quote >to> base    |  Base/quote
-        For x = Div To 100
-            Dim Volume As Decimal = Mdecimal((asset.BilancioDisponibile(market.Quote(n)) + asset.BilancioOrdini(market.Quote(n)) - asset.BILANCIOidealeSMA(market.Quote(n))) / x, market.MinVolume(n))
-            If Volume / market.Price(n) > 0.001 / asset.ToBTC(market.Base(n)) And (asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n))) + (Volume / market.Price(n)) <= asset.BILANCIOidealeSMA(market.Base(n)) And asset.BilancioDisponibile(market.Quote(n)) - Volume > 0 Then
+        For x = 1 To 1000
+            Dim Volume As Decimal = Mdecimal((asset.BTCtot / asset.ToBTC(market.Base(n))) / (Div * x), market.MinVolume(n))
+            If Volume > market.MinNotional(n) / market.Price(n) And (asset.BilancioDisponibile(market.Base(n)) + asset.BilancioOrdini(market.Base(n))) + Volume <= asset.BILANCIOidealeSMA(market.Base(n)) And asset.BilancioDisponibile(market.Quote(n)) - (Volume * market.Price(n)) >= asset.BILANCIOidealeSMA(market.Quote(n)) Then
                 Try
-                    Dim ordine = api.client.Spot.Order.PlaceOrder(market.Name(n), Enums.OrderSide.Buy, Enums.OrderType.Market, Mdecimal(Volume / market.PriceMax(n), market.MinVolume(n)))
+                    Dim ordine = api.client.Spot.Order.PlaceOrder(market.Name(n), Enums.OrderSide.Buy, Enums.OrderType.Market, Mdecimal(Volume, market.MinVolume(n)))
                     Log("BUY Market : " & ordine.Data.Symbol & " Volume : " & ordine.Data.Quantity & " Price : " & market.Price(n) & " ID : " & ordine.Data.OrderId)
                     VerificaBilancio()
                     Exit For
@@ -854,7 +835,8 @@ Public Class Binance
                     LogError("ERROR BUY Market : " & market.Name(n) & "  |  Volume : " & Volume & " /!\ " & ex.Message)
                     Exit For
                 End Try
-            Else
+            ElseIf asset.BilancioDisponibile(market.Quote(n)) - (Volume * market.Price(n)) < asset.BILANCIOidealeSMA(market.Quote(n)) Then
+                Exit For
             End If
         Next
     End Sub
