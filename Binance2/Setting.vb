@@ -27,9 +27,9 @@
     Private Sub ButtonEdit_Click(sender As Object, e As EventArgs) Handles ButtonEdit.Click
         Dim ass As String = TextBoxAsset.Text.ToUpper
         Dim assetTEMP As New List(Of String)
-            Dim splitTEMP As New List(Of Integer)
-
-        If Binance.asset.List.Contains(ass) Then
+        Dim splitTEMP As New List(Of Integer)
+        Dim AXX As String() = {"BTC", "ETH", "BNB", "USDT", "EOS", "LINK"}
+        If AXX.Contains(ass) Then
             For x As Integer = 0 To ListView1.Items.Count - 1
                 assetTEMP.Add(ListView1.Items(x).Text)
                 splitTEMP.Add(ListView1.Items(x).SubItems(1).Text)

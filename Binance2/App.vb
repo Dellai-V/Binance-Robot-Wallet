@@ -9,26 +9,25 @@ Public Class App
         End If
         Timer1.Interval = My.Settings.Ctimer * 1000
         Timer2.Interval = My.Settings.UPtimer * 60000
-        Timer2.Start()
         Binance.LoadAPI()
     End Sub
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Timer1.Stop()
         Binance.OHLC()
-        Binance.EmuChart()
         Binance.CalcoloBTC()
         Timer1.Start()
     End Sub
 
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
         Timer2.Stop()
-        If CheckBox1.Checked = True Then
-            Binance.CancellaOrdini()
-            Binance.VerificaBilancio()
-            Binance.StartTrade()
+        Binance.CancellaOrdini()
+        Binance.GetBalance()
+        Binance.LendingBalance()
+        Binance.StartTrade()
+        If StartToolStripMenuItem.Text = "Stop" Then
+            Timer2.Start()
         End If
-        Timer2.Start()
     End Sub
 
     Private Sub Timer3_Tick(sender As Object, e As EventArgs) Handles Timer3.Tick
@@ -43,5 +42,16 @@ Public Class App
         Setting.Show()
     End Sub
 
-
+    Private Sub StartToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StartToolStripMenuItem.Click
+        If StartToolStripMenuItem.Text = "Start" Then
+            StartToolStripMenuItem.Text = "Stop"
+            ToolStripStatusLabel1.Text = "Auto Trade : ON"
+            ToolStripStatusLabel1.ForeColor = Color.Green
+            Timer2.Start()
+        Else
+            StartToolStripMenuItem.Text = "Start"
+            ToolStripStatusLabel1.Text = "Auto Trade : OFF"
+            ToolStripStatusLabel1.ForeColor = Color.Salmon
+        End If
+    End Sub
 End Class

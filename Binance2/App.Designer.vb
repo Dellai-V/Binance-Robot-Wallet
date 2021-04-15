@@ -26,50 +26,46 @@ Partial Class App
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(App))
         Me.ListCharts = New System.Windows.Forms.ListView()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.ListOrder = New System.Windows.Forms.ListView()
-        Me.ColumnHeader7 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader8 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader9 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader10 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader11 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader12 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.Timer2 = New System.Windows.Forms.Timer(Me.components)
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.ToolStripSplitButton1 = New System.Windows.Forms.ToolStripSplitButton()
         Me.SettigAPIToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SettingBOTToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TradeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripStatusLabel2 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LabelTot = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripStatusLabel3 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LabelBuy = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LabelSell = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Log = New System.Windows.Forms.RichTextBox()
         Me.ListBalance = New System.Windows.Forms.ListView()
         Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader2 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader13 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader5 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeader6 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
-        Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.Timer3 = New System.Windows.Forms.Timer(Me.components)
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'ListCharts
         '
-        Me.ListCharts.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListCharts.BackColor = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.ListCharts.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ListCharts.Dock = System.Windows.Forms.DockStyle.Top
         Me.ListCharts.Font = New System.Drawing.Font("Consolas", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListCharts.ForeColor = System.Drawing.Color.White
         Me.ListCharts.HideSelection = False
         Me.ListCharts.LabelWrap = False
         Me.ListCharts.Location = New System.Drawing.Point(0, 0)
+        Me.ListCharts.Margin = New System.Windows.Forms.Padding(0)
         Me.ListCharts.MultiSelect = False
         Me.ListCharts.Name = "ListCharts"
-        Me.ListCharts.Size = New System.Drawing.Size(782, 272)
+        Me.ListCharts.Size = New System.Drawing.Size(782, 287)
         Me.ListCharts.TabIndex = 2
         Me.ListCharts.UseCompatibleStateImageBehavior = False
         Me.ListCharts.View = System.Windows.Forms.View.Details
@@ -78,55 +74,6 @@ Partial Class App
         '
         Me.Timer1.Interval = 3000
         '
-        'ListOrder
-        '
-        Me.ListOrder.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ListOrder.BackColor = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
-        Me.ListOrder.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.ListOrder.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader7, Me.ColumnHeader8, Me.ColumnHeader9, Me.ColumnHeader10, Me.ColumnHeader11, Me.ColumnHeader12})
-        Me.ListOrder.Font = New System.Drawing.Font("Consolas", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ListOrder.ForeColor = System.Drawing.Color.White
-        Me.ListOrder.HideSelection = False
-        Me.ListOrder.LabelWrap = False
-        Me.ListOrder.Location = New System.Drawing.Point(0, 272)
-        Me.ListOrder.MultiSelect = False
-        Me.ListOrder.Name = "ListOrder"
-        Me.ListOrder.Size = New System.Drawing.Size(782, 154)
-        Me.ListOrder.TabIndex = 7
-        Me.ListOrder.UseCompatibleStateImageBehavior = False
-        Me.ListOrder.View = System.Windows.Forms.View.Details
-        '
-        'ColumnHeader7
-        '
-        Me.ColumnHeader7.Text = "Name"
-        Me.ColumnHeader7.Width = 70
-        '
-        'ColumnHeader8
-        '
-        Me.ColumnHeader8.Text = "Price"
-        Me.ColumnHeader8.Width = 120
-        '
-        'ColumnHeader9
-        '
-        Me.ColumnHeader9.Text = "Slde"
-        Me.ColumnHeader9.Width = 50
-        '
-        'ColumnHeader10
-        '
-        Me.ColumnHeader10.Text = "Original Quantity"
-        Me.ColumnHeader10.Width = 120
-        '
-        'ColumnHeader11
-        '
-        Me.ColumnHeader11.Text = "Executed Quantity"
-        Me.ColumnHeader11.Width = 120
-        '
-        'ColumnHeader12
-        '
-        Me.ColumnHeader12.Text = "Id"
-        Me.ColumnHeader12.Width = 120
-        '
         'Timer2
         '
         Me.Timer2.Interval = 600000
@@ -134,7 +81,7 @@ Partial Class App
         'StatusStrip1
         '
         Me.StatusStrip1.BackColor = System.Drawing.Color.White
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripSplitButton1, Me.LabelTot, Me.LabelBuy, Me.LabelSell})
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripSplitButton1, Me.ToolStripStatusLabel1, Me.ToolStripStatusLabel2, Me.LabelTot, Me.ToolStripStatusLabel3, Me.LabelBuy, Me.LabelSell})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 739)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(782, 22)
@@ -144,7 +91,7 @@ Partial Class App
         'ToolStripSplitButton1
         '
         Me.ToolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripSplitButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SettigAPIToolStripMenuItem, Me.SettingBOTToolStripMenuItem})
+        Me.ToolStripSplitButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SettigAPIToolStripMenuItem, Me.SettingBOTToolStripMenuItem, Me.TradeToolStripMenuItem})
         Me.ToolStripSplitButton1.Image = CType(resources.GetObject("ToolStripSplitButton1.Image"), System.Drawing.Image)
         Me.ToolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolStripSplitButton1.Margin = New System.Windows.Forms.Padding(0, 2, 10, 0)
@@ -164,6 +111,35 @@ Partial Class App
         Me.SettingBOTToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
         Me.SettingBOTToolStripMenuItem.Text = "Setting BOT"
         '
+        'TradeToolStripMenuItem
+        '
+        Me.TradeToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StartToolStripMenuItem})
+        Me.TradeToolStripMenuItem.Name = "TradeToolStripMenuItem"
+        Me.TradeToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
+        Me.TradeToolStripMenuItem.Text = "Trade"
+        '
+        'StartToolStripMenuItem
+        '
+        Me.StartToolStripMenuItem.Name = "StartToolStripMenuItem"
+        Me.StartToolStripMenuItem.Size = New System.Drawing.Size(98, 22)
+        Me.StartToolStripMenuItem.Text = "Start"
+        '
+        'ToolStripStatusLabel1
+        '
+        Me.ToolStripStatusLabel1.Font = New System.Drawing.Font("Consolas", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripStatusLabel1.ForeColor = System.Drawing.Color.Salmon
+        Me.ToolStripStatusLabel1.Margin = New System.Windows.Forms.Padding(10, 3, 10, 2)
+        Me.ToolStripStatusLabel1.Name = "ToolStripStatusLabel1"
+        Me.ToolStripStatusLabel1.Size = New System.Drawing.Size(119, 17)
+        Me.ToolStripStatusLabel1.Text = "Auto Trade : OFF"
+        '
+        'ToolStripStatusLabel2
+        '
+        Me.ToolStripStatusLabel2.ForeColor = System.Drawing.Color.Black
+        Me.ToolStripStatusLabel2.Name = "ToolStripStatusLabel2"
+        Me.ToolStripStatusLabel2.Size = New System.Drawing.Size(10, 17)
+        Me.ToolStripStatusLabel2.Text = "|"
+        '
         'LabelTot
         '
         Me.LabelTot.BackColor = System.Drawing.Color.Transparent
@@ -173,6 +149,13 @@ Partial Class App
         Me.LabelTot.Name = "LabelTot"
         Me.LabelTot.Size = New System.Drawing.Size(84, 17)
         Me.LabelTot.Text = "Tot : 0 BTC"
+        '
+        'ToolStripStatusLabel3
+        '
+        Me.ToolStripStatusLabel3.ForeColor = System.Drawing.Color.Black
+        Me.ToolStripStatusLabel3.Name = "ToolStripStatusLabel3"
+        Me.ToolStripStatusLabel3.Size = New System.Drawing.Size(10, 17)
+        Me.ToolStripStatusLabel3.Text = "|"
         '
         'LabelBuy
         '
@@ -197,33 +180,32 @@ Partial Class App
         '
         'Log
         '
-        Me.Log.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Log.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Log.BackColor = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.Log.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.Log.Font = New System.Drawing.Font("Consolas", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Log.ForeColor = System.Drawing.Color.White
-        Me.Log.Location = New System.Drawing.Point(0, 581)
+        Me.Log.Location = New System.Drawing.Point(0, 430)
         Me.Log.Name = "Log"
-        Me.Log.Size = New System.Drawing.Size(782, 158)
+        Me.Log.Size = New System.Drawing.Size(782, 309)
         Me.Log.TabIndex = 10
         Me.Log.Text = ""
         '
         'ListBalance
         '
-        Me.ListBalance.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListBalance.BackColor = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.ListBalance.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.ListBalance.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader3, Me.ColumnHeader4, Me.ColumnHeader5, Me.ColumnHeader6})
+        Me.ListBalance.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader2, Me.ColumnHeader13, Me.ColumnHeader3, Me.ColumnHeader5, Me.ColumnHeader6})
         Me.ListBalance.Font = New System.Drawing.Font("Consolas", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListBalance.ForeColor = System.Drawing.Color.White
         Me.ListBalance.HideSelection = False
         Me.ListBalance.LabelWrap = False
-        Me.ListBalance.Location = New System.Drawing.Point(0, 432)
+        Me.ListBalance.Location = New System.Drawing.Point(0, 287)
+        Me.ListBalance.Margin = New System.Windows.Forms.Padding(0)
         Me.ListBalance.MultiSelect = False
         Me.ListBalance.Name = "ListBalance"
-        Me.ListBalance.Size = New System.Drawing.Size(782, 149)
+        Me.ListBalance.Size = New System.Drawing.Size(782, 140)
         Me.ListBalance.SmallImageList = Me.ImageList1
         Me.ListBalance.TabIndex = 11
         Me.ListBalance.UseCompatibleStateImageBehavior = False
@@ -232,26 +214,25 @@ Partial Class App
         'ColumnHeader1
         '
         Me.ColumnHeader1.Text = "Asset"
-        Me.ColumnHeader1.Width = 70
         '
         'ColumnHeader2
         '
         Me.ColumnHeader2.Text = "Balance Total"
-        Me.ColumnHeader2.Width = 170
+        Me.ColumnHeader2.Width = 120
+        '
+        'ColumnHeader13
+        '
+        Me.ColumnHeader13.Text = "Savings"
+        Me.ColumnHeader13.Width = 120
         '
         'ColumnHeader3
         '
-        Me.ColumnHeader3.Text = "Balance Free"
-        Me.ColumnHeader3.Width = 170
-        '
-        'ColumnHeader4
-        '
-        Me.ColumnHeader4.Text = "Balance Orders"
-        Me.ColumnHeader4.Width = 170
+        Me.ColumnHeader3.Text = "Free"
+        Me.ColumnHeader3.Width = 120
         '
         'ColumnHeader5
         '
-        Me.ColumnHeader5.Text = "Balance to BTC"
+        Me.ColumnHeader5.Text = "to BTC"
         Me.ColumnHeader5.Width = 100
         '
         'ColumnHeader6
@@ -286,20 +267,6 @@ Partial Class App
         Me.ImageList1.Images.SetKeyName(20, "XTZ.png")
         Me.ImageList1.Images.SetKeyName(21, "ZEC.png")
         '
-        'CheckBox1
-        '
-        Me.CheckBox1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.CheckBox1.AutoSize = True
-        Me.CheckBox1.BackColor = System.Drawing.Color.White
-        Me.CheckBox1.Font = New System.Drawing.Font("Consolas", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CheckBox1.ForeColor = System.Drawing.Color.Black
-        Me.CheckBox1.Location = New System.Drawing.Point(637, 741)
-        Me.CheckBox1.Name = "CheckBox1"
-        Me.CheckBox1.Size = New System.Drawing.Size(110, 19)
-        Me.CheckBox1.TabIndex = 12
-        Me.CheckBox1.Text = "Active Trade"
-        Me.CheckBox1.UseVisualStyleBackColor = False
-        '
         'Timer3
         '
         Me.Timer3.Enabled = True
@@ -311,11 +278,9 @@ Partial Class App
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer), CType(CType(35, Byte), Integer))
         Me.ClientSize = New System.Drawing.Size(782, 761)
-        Me.Controls.Add(Me.CheckBox1)
         Me.Controls.Add(Me.ListBalance)
         Me.Controls.Add(Me.Log)
         Me.Controls.Add(Me.StatusStrip1)
-        Me.Controls.Add(Me.ListOrder)
         Me.Controls.Add(Me.ListCharts)
         Me.ForeColor = System.Drawing.Color.White
         Me.Name = "App"
@@ -329,16 +294,8 @@ Partial Class App
     End Sub
     Friend WithEvents ListCharts As ListView
     Friend WithEvents Timer1 As Timer
-    Friend WithEvents ListOrder As ListView
-    Friend WithEvents ColumnHeader7 As ColumnHeader
-    Friend WithEvents ColumnHeader8 As ColumnHeader
-    Friend WithEvents ColumnHeader9 As ColumnHeader
-    Friend WithEvents ColumnHeader10 As ColumnHeader
-    Friend WithEvents ColumnHeader11 As ColumnHeader
-    Friend WithEvents ColumnHeader12 As ColumnHeader
     Friend WithEvents Timer2 As Timer
     Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents LabelTot As ToolStripStatusLabel
     Friend WithEvents LabelBuy As ToolStripStatusLabel
     Friend WithEvents LabelSell As ToolStripStatusLabel
     Friend WithEvents Log As RichTextBox
@@ -346,13 +303,18 @@ Partial Class App
     Friend WithEvents ColumnHeader1 As ColumnHeader
     Friend WithEvents ColumnHeader2 As ColumnHeader
     Friend WithEvents ColumnHeader3 As ColumnHeader
-    Friend WithEvents ColumnHeader4 As ColumnHeader
     Friend WithEvents ColumnHeader5 As ColumnHeader
     Friend WithEvents ColumnHeader6 As ColumnHeader
-    Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents ToolStripSplitButton1 As ToolStripSplitButton
     Friend WithEvents SettigAPIToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SettingBOTToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImageList1 As ImageList
     Friend WithEvents Timer3 As Timer
+    Friend WithEvents ColumnHeader13 As ColumnHeader
+    Friend WithEvents LabelTot As ToolStripStatusLabel
+    Friend WithEvents TradeToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents StartToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripStatusLabel1 As ToolStripStatusLabel
+    Friend WithEvents ToolStripStatusLabel2 As ToolStripStatusLabel
+    Friend WithEvents ToolStripStatusLabel3 As ToolStripStatusLabel
 End Class
