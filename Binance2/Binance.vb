@@ -697,6 +697,9 @@ Public Class Binance
                     If info.Data(x).Asset = n And info.Data(x).FreeAmount > volume Then
                         Dim left = api.client.Lending.RedeemFlexibleProduct(info.Data(x).ProductId, volume, Enums.RedeemType.Fast)
                         Log("REDEEM : " & info.Data(x).ProductId & "  Volume : " & volume)
+                    Else
+                        Dim left = api.client.Lending.RedeemFlexibleProduct(info.Data(x).ProductId, info.Data(x).FreeAmount, Enums.RedeemType.Fast)
+                        Log("REDEEM : " & D.ProductId & "  Volume : " & info.Data(x).FreeAmount)
                     End If
                 Next
             End If
